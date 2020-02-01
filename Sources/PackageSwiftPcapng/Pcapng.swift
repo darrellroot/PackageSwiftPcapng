@@ -20,9 +20,9 @@ public struct Pcapng {
                 break
             }
             let blockType = getUInt32(data: data)
-            debugPrint("block type 0x%x",blockType)
+            print("block type 0x%x",blockType)
             let blockLength = getUInt32(data: data.advanced(by: 4))
-            debugPrint("blockLength \(blockLength)")
+            print("blockLength \(blockLength)")
             done = true
         }
         func getSectionHeader() {
@@ -34,6 +34,7 @@ public struct Pcapng {
      getUInt32 assumes 4 bytes exist in data or it will crash
      */
     func getUInt32(data: Data)-> UInt32 {
+        debugPrint(" octet1 \(octet1) octet2 \(octet2) octet3 \(octet3) octet4 \(octet4)")
         let octet1: UInt32 = UInt32(data[data.startIndex]) << 24
         let octet2: UInt32 = UInt32(data[data.startIndex + 1]) << 16
         let octet3: UInt32 = UInt32(data[data.startIndex + 2]) << 8
