@@ -34,11 +34,11 @@ public struct Pcapng {
      getUInt32 assumes 4 bytes exist in data or it will crash
      */
     func getUInt32(data: Data)-> UInt32 {
-        let octet1: UInt32 = UInt32(data[data.startIndex]) << 24
-        let octet2: UInt32 = UInt32(data[data.startIndex + 1]) << 16
-        let octet3: UInt32 = UInt32(data[data.startIndex + 2]) << 8
-        let octet4: UInt32 = UInt32(data[data.startIndex + 3])
-        debugPrint(" octet1 \(octet1) octet2 \(octet2) octet3 \(octet3) octet4 \(octet4)")
-        return octet1 + octet2 + octet3 + octet4
+        let octet0: UInt32 = UInt32(data[data.startIndex])
+        let octet1: UInt32 = UInt32(data[data.startIndex + 1])
+        let octet2: UInt32 = UInt32(data[data.startIndex + 2])
+        let octet3: UInt32 = UInt32(data[data.startIndex + 3])
+        debugPrint(" octet0 \(octet0) octet1 \(octet1) octet2 \(octet2) octet3 \(octet3)")
+        return octet0 + octet1 << 8 + octet2 << 16 + octet3 << 24
     }
 }
