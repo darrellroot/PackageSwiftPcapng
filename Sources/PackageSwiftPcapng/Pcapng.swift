@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Pcapng {
+public struct Pcapng {
     let originalData: Data
     var done = false     // set to true at end of data or when block size exceeds remaining data size
     init?(data inputData: Data) {
