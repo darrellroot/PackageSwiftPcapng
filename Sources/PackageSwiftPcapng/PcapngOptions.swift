@@ -17,6 +17,7 @@ public struct PcapngOptions {
             }
             let code = Int(Pcapng.getUInt16(data: data))
             let length = Int(Pcapng.getUInt16(data: data.advanced(by: 2)))
+            print("code \(code) length \(length) startIndex \(data.startIndex)")
             let value = data[data.startIndex + 4 ..< data.startIndex + 4 + length]
             if let option = PcapngOption(code: code, length: length, value: value) {
                 options.append(option)
@@ -24,7 +25,20 @@ public struct PcapngOptions {
                     return options
                 }
             }
-            data = data.advanced(by: length + 4)
+            let padding: Int
+            switch length % 4 {  //option field padded to 32 bits
+            case 0:
+                padding = 0
+            case 1:
+                padding = 3
+            case 2:
+                padding = 2
+            case 3:
+                padding = 1
+            default: // should never get here
+                padding = 0
+            }
+            data = data.advanced(by: length + 4 + padding)
         }
     }
 }
