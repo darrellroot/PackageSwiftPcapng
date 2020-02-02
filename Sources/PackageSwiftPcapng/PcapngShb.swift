@@ -10,17 +10,18 @@ import Foundation
 /**
  Structure for PcapNG Section Header Block
  */
-struct PcapngShb: CustomStringConvertible {
+public struct PcapngShb: CustomStringConvertible {
     let blockType: UInt32
     let blockLength: Int  // encoded as UInt32 in header
     let byteOrderMagic: UInt32
     let majorVersion: UInt16
     let minorVersion: UInt16
     let sectionLength: Int64
+    var options: [PcapngOption] = []
     // TODO Options
     
-    var description: String {
-        let output = String(format: "PcapngShg blockType 0x%x blockTotalLength %d byteOrderMagic 0x%x majorVersion %d minorVersion %d sectionLength %d",blockType, blockLength, byteOrderMagic, majorVersion, minorVersion, sectionLength)
+    public var description: String {
+        let output = String(format: "PcapngShg blockType 0x%x blockTotalLength %d byteOrderMagic 0x%x majorVersion %d minorVersion %d sectionLength %d options.count %d",blockType, blockLength, byteOrderMagic, majorVersion, minorVersion, sectionLength, options.count)
         return output
     }
     init?(data: Data, verbose: Bool = false) {
@@ -54,10 +55,11 @@ struct PcapngShb: CustomStringConvertible {
             debugPrint("PcapngShb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")
             return nil
         }
-        let optionsData = data[data.startIndex + 24 ..< data.startIndex + blockLength - 4]
         debugPrint("PcapngShb options data count \(optionsData.count)")
         //TODO initialize options
-        
+        let optionsData = data[data.startIndex + 24 ..< data.startIndex + blockLength - 4]
+        self.options = PcapngOptions.makeOptions(data: optionsData)
+
         if verbose {
             debugPrint(self.description)
         }

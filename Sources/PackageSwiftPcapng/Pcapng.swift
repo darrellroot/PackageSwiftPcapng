@@ -10,6 +10,7 @@ import Foundation
 public struct Pcapng {
     let originalData: Data
     var done = false     // set to true at end of data or when block size exceeds remaining data size
+    var segments: [PcapngShb] = []
     public init?(data inputData: Data) {
         self.originalData = inputData
         var data = inputData
@@ -21,14 +22,16 @@ public struct Pcapng {
             }
             let blockType = Pcapng.getUInt32(data: data)
             print("block type 0x%x",blockType)
-            let blockLength = Pcapng.getUInt32(data: data.advanced(by: 4))
+            let blockLength = Int(Pcapng.getUInt32(data: data.advanced(by: 4)))
             print("blockLength \(blockLength)")
             done = true
             switch blockType {
             case 0x0a0d0d0a:
                 if let newBlock = PcapngShb(data: data) {
                     debugPrint(newBlock.description)
+                    segments.append(newBlock)
                 }
+                data = data.advanced(by: blockLength)
             default:
                 debugPrint("default case")
                 done = true
