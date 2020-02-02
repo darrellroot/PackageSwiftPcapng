@@ -21,8 +21,8 @@ public enum PcapngOption: CustomStringConvertible {
         }
     }
     init?(code: Int, length: Int, value: Data) {
+        debugPrint("PcapngOption.init code \(code) length \(length) value \(value)")
         switch code {
-            debugPrint("PcapngOption.init code \(code) length \(length) value \(value)")
         case 0:
             self = .endofopt
             return

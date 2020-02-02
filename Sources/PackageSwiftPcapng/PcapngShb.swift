@@ -55,9 +55,9 @@ public struct PcapngShb: CustomStringConvertible {
             debugPrint("PcapngShb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")
             return nil
         }
-        debugPrint("PcapngShb options data count \(optionsData.count)")
-        //TODO initialize options
         let optionsData = data[data.startIndex + 24 ..< data.startIndex + blockLength - 4]
+        debugPrint("PcapngShb options data count \(optionsData.count)")
+
         self.options = PcapngOptions.makeOptions(data: optionsData)
 
         if verbose {
