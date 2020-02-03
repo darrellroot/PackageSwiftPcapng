@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  PcapngShbOption.swift
 //  
 //
 //  Created by Darrell Root on 2/2/20.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum PcapngOption: CustomStringConvertible {
+public enum PcapngShbOption: CustomStringConvertible {
     
     case endofopt   // 0
     case comment(String) // 1

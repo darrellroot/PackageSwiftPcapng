@@ -10,14 +10,15 @@ import Foundation
 /**
  Structure for PcapNG Section Header Block
  */
-public struct PcapngShb: CustomStringConvertible {
+public class PcapngShb: CustomStringConvertible {
     let blockType: UInt32
     let blockLength: Int  // encoded as UInt32 in header
     let byteOrderMagic: UInt32
     let majorVersion: UInt16
     let minorVersion: UInt16
     let sectionLength: Int64
-    var options: [PcapngOption] = []
+    var options: [PcapngShbOption] = []
+    var interfaces: [PcapngIdb] = []
     // TODO Options
     
     public var description: String {

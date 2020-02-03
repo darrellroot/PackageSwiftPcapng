@@ -24,18 +24,25 @@ public struct Pcapng {
             print("block type 0x%x",blockType)
             let blockLength = Int(Pcapng.getUInt32(data: data.advanced(by: 4)))
             print("blockLength \(blockLength)")
-            done = true
             switch blockType {
             case 0x0a0d0d0a:
                 if let newBlock = PcapngShb(data: data) {
                     debugPrint(newBlock.description)
                     segments.append(newBlock)
                 }
-                data = data.advanced(by: blockLength)
+            case 1:
+                guard let newBlock = PcapngIdb(data: data), let lastSegment = segments.last else {
+                    debugPrint("error decoding Idb Block, aborting")
+                    done = true
+                    break
+                }
+                debugPrint(newBlock.description)
+                lastSegment.interfaces.append(newBlock)
             default:
                 debugPrint("default case")
                 done = true
             }
+            data = data.advanced(by: blockLength)
         }
         func getSectionHeader() {
             
