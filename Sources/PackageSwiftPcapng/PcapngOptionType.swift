@@ -6,8 +6,8 @@
 //
 
 import Foundation
-enum PcapngOptionType {
+public enum PcapngOptionType {
     case shb
-    case ihb
+    case idb
     
 }

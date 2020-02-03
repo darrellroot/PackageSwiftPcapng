@@ -8,7 +8,7 @@
 import Foundation
 
 public struct PcapngOptions {
-    public static func makeOptions(data: Data) -> [PcapngOption] {
+    public static func makeOptions(data: Data, type: PcapngOptionType) -> [PcapngOption] {
         var options: [PcapngOption] = []
         var data = data
         while true {
@@ -19,7 +19,7 @@ public struct PcapngOptions {
             let length = Int(Pcapng.getUInt16(data: data.advanced(by: 2)))
             print("code \(code) length \(length) startIndex \(data.startIndex)")
             let value = data[data.startIndex + 4 ..< data.startIndex + 4 + length]
-            if let option = PcapngOption(code: code, length: length, value: value) {
+            if let option = PcapngOption(code: code, length: length, data: value, type: type) {
                 options.append(option)
                 if case .endofopt = option {
                     return options
