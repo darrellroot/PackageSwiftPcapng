@@ -17,7 +17,7 @@ public class PcapngShb: CustomStringConvertible {
     let majorVersion: UInt16
     let minorVersion: UInt16
     let sectionLength: Int64
-    var options: [PcapngShbOption] = []
+    var options: [PcapngOption] = []
     var interfaces: [PcapngIdb] = []
     // TODO Options
     

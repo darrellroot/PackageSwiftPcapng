@@ -7,7 +7,7 @@
 
 import Foundation
 
-public enum PcapngShbOption: CustomStringConvertible {
+public enum PcapngOption: CustomStringConvertible {
     
     case endofopt   // 0
     case comment(String) // 1
