@@ -56,7 +56,7 @@ public struct PcapngEpb: CustomStringConvertible {
             debugPrint("PcapngIdb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")
             return nil
         }
-        let optionsData = data[data.startIndex + 28 + capturedLength + Pcapng.paddingTo4(capturedLength) ..< data.endIndex - 4]
+        let optionsData = data[data.startIndex + 28 + capturedLength + Pcapng.paddingTo4(capturedLength) ..< data.startIndex + blockLength - 4]
         debugPrint("PcapngEpb options data count \(optionsData.count)")
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .epb)
