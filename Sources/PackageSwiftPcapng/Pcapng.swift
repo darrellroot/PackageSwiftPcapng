@@ -8,9 +8,9 @@
 import Foundation
 
 public struct Pcapng: CustomStringConvertible {
-    let originalData: Data
+    public let originalData: Data
     var done = false     // set to true at end of data or when block size exceeds remaining data size
-    var segments: [PcapngShb] = []
+    public var segments: [PcapngShb] = []
     
     public var description: String {
         var output: String = "Pcapng segments \(segments.count)"

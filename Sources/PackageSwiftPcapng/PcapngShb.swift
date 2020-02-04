@@ -11,15 +11,15 @@ import Foundation
  Structure for PcapNG Section Header Block
  */
 public class PcapngShb: CustomStringConvertible {
-    let blockType: UInt32
-    let blockLength: Int  // encoded as UInt32 in header
-    let byteOrderMagic: UInt32
-    let majorVersion: UInt16
-    let minorVersion: UInt16
-    let sectionLength: Int64
-    var options: [PcapngOption] = []
-    var interfaces: [PcapngIdb] = []
-    var packetBlocks: [PcapngEpb] = []
+    public let blockType: UInt32
+    public let blockLength: Int  // encoded as UInt32 in header
+    public let byteOrderMagic: UInt32
+    public let majorVersion: UInt16
+    public let minorVersion: UInt16
+    public let sectionLength: Int64
+    private(set) var options: [PcapngOption] = []
+    private(set) var interfaces: [PcapngIdb] = []
+    private(set) var packetBlocks: [PcapngEpb] = []
     // TODO Options
     
     public var description: String {

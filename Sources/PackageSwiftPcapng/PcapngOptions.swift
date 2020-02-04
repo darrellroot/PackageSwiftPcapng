@@ -9,8 +9,8 @@ import Foundation
 
 public struct PcapngOptions {
     public static func makeOptions(data: Data, type: PcapngOptionType) -> [PcapngOption] {
-        var options: [PcapngOption] = []
-        var data = data
+        private(set) var options: [PcapngOption] = []
+        private(set) var data = data
         while true {
             guard data.count >= 4 else {
                 return options

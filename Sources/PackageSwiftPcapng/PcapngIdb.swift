@@ -8,11 +8,11 @@
 import Foundation
 
 public struct PcapngIdb: CustomStringConvertible {
-    let blockType: UInt32
-    let blockLength: Int  // encoded as UInt32 in header
-    let linkType: Int
-    let snaplen: Int
-    var options: [PcapngOption] = []
+    public let blockType: UInt32
+    public let blockLength: Int  // encoded as UInt32 in header
+    public let linkType: Int
+    public let snaplen: Int
+    private(set) var options: [PcapngOption] = []
     // TODO Options
     
     public var description: String {

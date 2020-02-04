@@ -8,16 +8,16 @@
 import Foundation
 
 public struct PcapngEpb: CustomStringConvertible {
-    let blockType: UInt32
-    let blockLength: Int  // encoded as UInt32 in header
-    let interfaceId: Int
-    let timestampHigh: Int
-    let timestampLow: Int
-    let capturedLength: Int
-    let originalLength: Int
-    let packetData: Data  // packet data
-    var options: [PcapngOption] = []
-    let finalBlockLength: Int
+    public let blockType: UInt32
+    public let blockLength: Int  // encoded as UInt32 in header
+    public let interfaceId: Int
+    public let timestampHigh: Int
+    public let timestampLow: Int
+    public let capturedLength: Int
+    public let originalLength: Int
+    public let packetData: Data  // packet data
+    private(set) var options: [PcapngOption] = []
+    public let finalBlockLength: Int
     // TODO Options
     
     public var description: String {
