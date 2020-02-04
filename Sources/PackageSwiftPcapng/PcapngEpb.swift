@@ -16,7 +16,7 @@ public struct PcapngEpb: CustomStringConvertible {
     public let capturedLength: Int
     public let originalLength: Int
     public let packetData: Data  // packet data
-    private(set) var options: [PcapngOption] = []
+    public var options: [PcapngOption] = []
     public let finalBlockLength: Int
     // TODO Options
     

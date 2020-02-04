@@ -12,7 +12,7 @@ public struct PcapngIdb: CustomStringConvertible {
     public let blockLength: Int  // encoded as UInt32 in header
     public let linkType: Int
     public let snaplen: Int
-    private(set) var options: [PcapngOption] = []
+    public var options: [PcapngOption] = []
     // TODO Options
     
     public var description: String {
