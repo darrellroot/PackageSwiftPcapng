@@ -19,10 +19,14 @@ public class PcapngShb: CustomStringConvertible {
     let sectionLength: Int64
     var options: [PcapngOption] = []
     var interfaces: [PcapngIdb] = []
+    var packetBlocks: [PcapngEpb] = []
     // TODO Options
     
     public var description: String {
-        let output = String(format: "PcapngShg blockType 0x%x blockTotalLength %d byteOrderMagic 0x%x majorVersion %d minorVersion %d sectionLength %d options.count %d",blockType, blockLength, byteOrderMagic, majorVersion, minorVersion, sectionLength, options.count)
+        var output = String(format: "PcapngShg blockType 0x%x blockTotalLength %d byteOrderMagic 0x%x majorVersion %d minorVersion %d sectionLength %d options.count %d\n interfaces.count %d packetBlocks.count %d",blockType, blockLength, byteOrderMagic, majorVersion, minorVersion, sectionLength, options.count, interfaces.count, packetBlocks.count)
+        for option in options {
+            output.append("  \(option.description)\n")
+        }
         return output
     }
     init?(data: Data, verbose: Bool = false) {
@@ -61,10 +65,7 @@ public class PcapngShb: CustomStringConvertible {
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .shb)
 
-        if verbose {
-            debugPrint(self.description)
-        }
-        
+        debugPrint(self.description)
         
     }
 }

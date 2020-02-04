@@ -9,5 +9,6 @@ import Foundation
 public enum PcapngOptionType {
     case shb
     case idb
+    case epb
     
 }

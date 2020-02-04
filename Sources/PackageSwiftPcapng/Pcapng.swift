@@ -7,10 +7,18 @@
 
 import Foundation
 
-public struct Pcapng {
+public struct Pcapng: CustomStringConvertible {
     let originalData: Data
     var done = false     // set to true at end of data or when block size exceeds remaining data size
     var segments: [PcapngShb] = []
+    
+    public var description: String {
+        var output: String = "Pcapng segments \(segments.count)"
+        for (count,segment) in segments.enumerated() {
+            output.append("  segment\(count) options \(segment.options.count) interfaces \(segment.interfaces.count) packetBlocks \(segment.packetBlocks.count)")
+        }
+        return output
+    }
     public init?(data inputData: Data) {
         self.originalData = inputData
         var data = inputData
@@ -38,15 +46,25 @@ public struct Pcapng {
                 }
                 debugPrint(newBlock.description)
                 lastSegment.interfaces.append(newBlock)
+            case 6:
+                guard let newBlock = PcapngEpb(data: data), let lastSegment = segments.last else {
+                    debugPrint("error decoding Epb Block, aborting")
+                    done = true
+                    break
+                }
+                debugPrint(newBlock.description)
+                lastSegment.packetBlocks.append(newBlock)
             default:
                 debugPrint("default case")
                 done = true
             }
-            data = data.advanced(by: blockLength)
-        }
-        func getSectionHeader() {
-            
-        }
+            if data.count > blockLength {
+                data = data.advanced(by: blockLength)
+            } else {
+                done = true
+            }
+        } // while !done
+        debugPrint(self.description)
     }
 
     /**
@@ -72,5 +90,23 @@ public struct Pcapng {
         let second4 = getUInt32(data: data.advanced(by: 4))
         let bitPattern = UInt64(first4) << 32 + UInt64(second4)
         return Int64(bitPattern: bitPattern)
+    }
+    
+    /**
+     Returns number of bytes necessary to pad the passed in integer to a multiple of 4.  Used to pad to 32-bit boundaries.
+     */
+    static func paddingTo4(_ length: Int) -> Int {
+        switch length % 4 {  //option field padded to 32 bits
+        case 0:
+            return 0
+        case 1:
+            return 3
+        case 2:
+            return 2
+        case 3:
+            return 1
+        default: // should never get here
+            return 0
+        }
     }
 }
