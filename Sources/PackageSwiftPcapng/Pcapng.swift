@@ -78,6 +78,15 @@ public struct Pcapng: CustomStringConvertible {
                 }
                 debugPrint(newBlock.description)
                 lastSegment.packetBlocks.append(newBlock as PcapngPacket)
+            case 0xbad, 0x40000bad:
+                guard let newBlock = PcapngCb(data: data), let lastSegment = segments.last else {
+                    debugPrint("error decoding custom Block, aborting")
+                    done = true
+                    break
+                }
+                debugPrint(newBlock.description)
+                lastSegment.customBlocks.append(newBlock)
+
             default:
                 debugPrint("default case")
                 done = true

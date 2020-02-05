@@ -22,10 +22,11 @@ public class PcapngShb: CustomStringConvertible {
     public var interfaceStatistics: [PcapngIsb] = []
     public var nameResolutions: [PcapngNrb] = []
     public var packetBlocks: [PcapngPacket] = []
+    public var customBlocks: [PcapngCb] = []
     // TODO Options
     
     public var description: String {
-        var output = String(format: "PcapngShg blockType 0x%x blockTotalLength %d byteOrderMagic 0x%x majorVersion %d minorVersion %d sectionLength %d options.count %d\n interfaces.count %d packetBlocks.count %d",blockType, blockLength, byteOrderMagic, majorVersion, minorVersion, sectionLength, options.count, interfaces.count, packetBlocks.count)
+        var output = String(format: "PcapngShg blockType 0x%x blockTotalLength %d byteOrderMagic 0x%x majorVersion %d minorVersion %d sectionLength %d options.count %d\n interfaces.count %d interfaceStatistics %d nameResolutions %d packetBlocks.count %d customBlocks %d",blockType, blockLength, byteOrderMagic, majorVersion, minorVersion, sectionLength, options.count, interfaces.count, interfaceStatistics.count, nameResolutions.count, packetBlocks.count, customBlocks.count)
         for option in options {
             output.append("  \(option.description)\n")
         }

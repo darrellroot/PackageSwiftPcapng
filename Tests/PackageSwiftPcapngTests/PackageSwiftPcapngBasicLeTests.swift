@@ -397,7 +397,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
             XCTAssert(pcapng.segments.count == 1)
             XCTAssert(pcapng.segments.first?.interfaces.count == 0)
             XCTAssert(pcapng.segments.first?.packetBlocks.count == 0)
-            //TODO CB = 2, DCB = 2
+            XCTAssert(pcapng.segments.first?.customBlocks.count == 4)
             debugPrint(pcapng)
         }
     }
@@ -421,7 +421,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
             XCTAssert(pcapng.segments.count == 1)
             XCTAssert(pcapng.segments.first?.interfaces.count == 1)
             XCTAssert(pcapng.segments.first?.packetBlocks.count == 4)
-            //TODO CB=2 DCB=2
+            XCTAssert(pcapng.segments.first?.customBlocks.count == 4)
             debugPrint(pcapng)
         }
     }
