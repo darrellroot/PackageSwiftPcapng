@@ -20,6 +20,7 @@ public class PcapngShb: CustomStringConvertible {
     public var options: [PcapngOption] = []
     public var interfaces: [PcapngIdb] = []
     public var interfaceStatistics: [PcapngIsb] = []
+    public var nameResolutions: [PcapngNrb] = []
     public var packetBlocks: [PcapngPacket] = []
     // TODO Options
     

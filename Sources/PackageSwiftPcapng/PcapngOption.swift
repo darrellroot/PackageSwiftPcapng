@@ -36,6 +36,10 @@ public enum PcapngOption: CustomStringConvertible {
     case filterAccept(UInt64)  // 6
     case osDrop(UInt64) //7
     case usrDeliv(UInt64) //8
+    // type = nrb
+    case dnsName(String)
+    case dnsIpv4Address(IPv4Address)
+    case dnsIpv6Address(IPv6Address)
     
     static func getCString(length: Int, data: Data) -> String? {
         let cString = data[data.startIndex ..< data.startIndex + length]
@@ -198,7 +202,25 @@ public enum PcapngOption: CustomStringConvertible {
             }
             let usrDeliv = Pcapng.getUInt64(data: data)
             self = .usrDeliv(usrDeliv)
-            
+        case (.nrb, 2):  // ns_dnsname
+            guard let name = String(data: data[data.startIndex ..< data.startIndex + length], encoding: .utf8) else {
+                debugPrint("nrb option unable to decode dnsname string from data \(data) length \(length)")
+                return nil
+            }
+            self = .dnsName(name)
+        case (.nrb, 3): // ns_dnsIPv4addr
+            guard data.count >= 4, let ipv4Address = IPv4Address(data) else {
+                debugPrint("nrb option 3 unable to decode ipv4 address from \(data)")
+                return nil
+            }
+            self = .dnsIpv4Address(ipv4Address)
+        case (.nrb, 4): // ns_dnsIPv4addr
+            guard data.count >= 16, let ipv6Address = IPv6Address(data) else {
+                debugPrint("nrb option 3 unable to decode ipv6 address from \(data)")
+                return nil
+            }
+            self = .dnsIpv6Address(ipv6Address)
+
             
         default:
             debugPrint("unimplemented option code \(code)")
@@ -260,6 +282,12 @@ public enum PcapngOption: CustomStringConvertible {
             return "osDrop \(osDrop)"
         case .usrDeliv(let usrDeliv):
             return "usrDeliv \(usrDeliv)"
+        case .dnsName(let name):
+            return "dnsName \(name)"
+        case .dnsIpv4Address(let ip):
+            return "dnsIpv4Address \(ip)"
+        case .dnsIpv6Address(let ip):
+            return "dnsIpv6Address \(ip)"
         }
     }
     

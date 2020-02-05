@@ -11,5 +11,6 @@ public enum PcapngOptionType {
     case idb
     case epb
     case isb
+    case nrb
     
 }

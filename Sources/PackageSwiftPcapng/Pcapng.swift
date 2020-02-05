@@ -54,6 +54,14 @@ public struct Pcapng: CustomStringConvertible {
                 }
                 debugPrint(newBlock.description)
                 lastSegment.packetBlocks.append(newBlock as PcapngPacket)
+            case 4:
+                guard let newBlock = PcapngNrb(data: data), let lastSegment = segments.last else {
+                    debugPrint("error decoding Nrb Block, aborting")
+                    done = true
+                    break
+                }
+                debugPrint(newBlock.description)
+                lastSegment.nameResolutions.append(newBlock)
             case 5:
                 guard let newBlock = PcapngIsb(data: data), let lastSegment = segments.last else {
                     debugPrint("error decoding Isb Block, aborting")
@@ -119,7 +127,7 @@ public struct Pcapng: CustomStringConvertible {
             return []
         }
         let substrings = bigString.split(separator: "\0", omittingEmptySubsequences: true)
-        return substrings.map{String($0})}
+        return substrings.map{String($0)}
     }
 
     
