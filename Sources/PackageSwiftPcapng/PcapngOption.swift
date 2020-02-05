@@ -28,6 +28,14 @@ public enum PcapngOption: CustomStringConvertible {
     case flags(UInt32) //2
     case hash(algorithm: UInt8, hash: Data)
     case dropcount(UInt64) // 8
+    // type = isb
+    case startTime(UInt64) //2
+    case endTime(UInt64)  // 3
+    case ifrecv(UInt64)  //4
+    case ifdrop(UInt64)  //5
+    case filterAccept(UInt64)  // 6
+    case osDrop(UInt64) //7
+    case usrDeliv(UInt64) //8
     
     static func getCString(length: Int, data: Data) -> String? {
         let cString = data[data.startIndex ..< data.startIndex + length]
@@ -147,13 +155,65 @@ public enum PcapngOption: CustomStringConvertible {
             return
             //case flags(UInt32) //2
             //case hash(type: UInt8, hash: Data) // 3
-            //case dropcount(UInt64) // 8
+        //case dropcount(UInt64) // 8
+        case (.isb, 2):
+            guard data.count >= 8 else {
+                return nil
+            }
+            let startTime = Pcapng.getUInt64(data: data)
+            self = .startTime(startTime)
+        case (.isb, 3):
+            guard data.count >= 8 else {
+                return nil
+            }
+            let endTime = Pcapng.getUInt64(data: data)
+            self = .endTime(endTime)
+        case (.isb, 4):
+            guard data.count >= 8 else {
+                return nil
+            }
+            let ifrecv = Pcapng.getUInt64(data: data)
+            self = .ifrecv(ifrecv)
+        case (.isb, 5):
+            guard data.count >= 8 else {
+                return nil
+            }
+            let ifdrop = Pcapng.getUInt64(data: data)
+            self = .ifdrop(ifdrop)
+        case (.isb, 6):
+            guard data.count >= 8 else {
+                return nil
+            }
+            let filterAccept = Pcapng.getUInt64(data: data)
+            self = .filterAccept(filterAccept)
+        case (.isb, 7):
+            guard data.count >= 8 else {
+                return nil
+            }
+            let osDrop = Pcapng.getUInt64(data: data)
+            self = .osDrop(osDrop)
+        case (.isb, 8):
+            guard data.count >= 8 else {
+                return nil
+            }
+            let usrDeliv = Pcapng.getUInt64(data: data)
+            self = .usrDeliv(usrDeliv)
+            
             
         default:
             debugPrint("unimplemented option code \(code)")
             return nil
         }
     }// init
+    
+    /*    // type = isb
+     case startTime(UInt64) //2
+     case endTime(UInt64)  // 3
+     case ifrecv(UInt64)  //4
+     case ifdrop(UInt64)  //5
+     case filterAccept(UInt64)  // 6
+     case osDrop(UInt64) //7
+     case usrDeliv(UInt64) //8*/
     
     public var description: String {
         switch self {
@@ -186,6 +246,20 @@ public enum PcapngOption: CustomStringConvertible {
             return "algorithm \(algorithm) hash.count \(hash.count)"
         case .dropcount(let count):
             return "dropcount \(count)"
+        case .startTime(let startTime):
+            return "startTime \(startTime)"
+        case .endTime(let endTime):
+            return "endtime \(endTime)"
+        case .ifrecv(let ifrecv):
+            return "ifrecv \(ifrecv)"
+        case .ifdrop(let ifdrop):
+            return "ifdrop \(ifdrop)"
+        case .filterAccept(let filterAccept):
+            return "filterAccept \(filterAccept)"
+        case .osDrop(let osDrop):
+            return "osDrop \(osDrop)"
+        case .usrDeliv(let usrDeliv):
+            return "usrDeliv \(usrDeliv)"
         }
     }
     

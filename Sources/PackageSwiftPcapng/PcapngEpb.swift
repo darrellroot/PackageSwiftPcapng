@@ -7,7 +7,7 @@
 
 import Foundation
 
-public struct PcapngEpb: CustomStringConvertible {
+public struct PcapngEpb: CustomStringConvertible, PcapngPacket {
     public let blockType: UInt32
     public let blockLength: Int  // encoded as UInt32 in header
     public let interfaceId: Int

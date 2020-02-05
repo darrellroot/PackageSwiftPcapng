@@ -19,7 +19,8 @@ public class PcapngShb: CustomStringConvertible {
     public let sectionLength: Int64
     public var options: [PcapngOption] = []
     public var interfaces: [PcapngIdb] = []
-    public var packetBlocks: [PcapngEpb] = []
+    public var interfaceStatistics: [PcapngIsb] = []
+    public var packetBlocks: [PcapngPacket] = []
     // TODO Options
     
     public var description: String {

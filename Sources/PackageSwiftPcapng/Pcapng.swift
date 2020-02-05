@@ -46,6 +46,22 @@ public struct Pcapng: CustomStringConvertible {
                 }
                 debugPrint(newBlock.description)
                 lastSegment.interfaces.append(newBlock)
+            case 3:
+                guard let lastSegment = segments.last, let firstInterface = lastSegment.interfaces.first, let newBlock = PcapngSpb(data: data, snaplen: firstInterface.snaplen) else {
+                    debugPrint("error decoding Spb Block, aborting")
+                    done = true
+                    break
+                }
+                debugPrint(newBlock.description)
+                lastSegment.packetBlocks.append(newBlock as PcapngPacket)
+            case 5:
+                guard let newBlock = PcapngIsb(data: data), let lastSegment = segments.last else {
+                    debugPrint("error decoding Isb Block, aborting")
+                    done = true
+                    break
+                }
+                debugPrint(newBlock.description)
+                lastSegment.interfaceStatistics.append(newBlock)
             case 6:
                 guard let newBlock = PcapngEpb(data: data), let lastSegment = segments.last else {
                     debugPrint("error decoding Epb Block, aborting")
@@ -53,7 +69,7 @@ public struct Pcapng: CustomStringConvertible {
                     break
                 }
                 debugPrint(newBlock.description)
-                lastSegment.packetBlocks.append(newBlock)
+                lastSegment.packetBlocks.append(newBlock as PcapngPacket)
             default:
                 debugPrint("default case")
                 done = true
@@ -91,6 +107,13 @@ public struct Pcapng: CustomStringConvertible {
         let bitPattern = UInt64(first4) << 32 + UInt64(second4)
         return Int64(bitPattern: bitPattern)
     }
+    static func getUInt64(data: Data)-> UInt64 {
+        let first4 = getUInt32(data: data)
+        let second4 = getUInt32(data: data.advanced(by: 4))
+        let bitPattern = UInt64(first4) << 32 + UInt64(second4)
+        return bitPattern
+    }
+
     
     /**
      Returns number of bytes necessary to pad the passed in integer to a multiple of 4.  Used to pad to 32-bit boundaries.
