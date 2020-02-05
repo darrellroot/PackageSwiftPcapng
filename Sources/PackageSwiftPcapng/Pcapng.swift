@@ -113,6 +113,14 @@ public struct Pcapng: CustomStringConvertible {
         let bitPattern = UInt64(first4) << 32 + UInt64(second4)
         return bitPattern
     }
+    static func getCStrings(data: Data) -> [String] {
+        guard let bigString = String(data: data, encoding: .utf8) else {
+            debugPrint("Unable to decode strings from data \(data)")
+            return []
+        }
+        let substrings = bigString.split(separator: "\0", omittingEmptySubsequences: true)
+        return substrings.map{String($0})}
+    }
 
     
     /**
