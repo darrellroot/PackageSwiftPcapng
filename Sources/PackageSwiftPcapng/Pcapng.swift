@@ -8,6 +8,7 @@
 import Foundation
 
 public struct Pcapng: CustomStringConvertible {
+    static let version = "PackageSwiftPcapng version 0.0.1"
     public let originalData: Data
     var done = false     // set to true at end of data or when block size exceeds remaining data size
     public var segments: [PcapngShb] = []

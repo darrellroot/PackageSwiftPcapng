@@ -7,6 +7,10 @@
 
 import Foundation
 
+/**
+Protocol for all PcapNG Packet blocks
+ Enhanded and Simple
+*/
 public protocol PcapngPacket: CustomStringConvertible {
     var blockType: UInt32 { get }
     var blockLength: Int { get }

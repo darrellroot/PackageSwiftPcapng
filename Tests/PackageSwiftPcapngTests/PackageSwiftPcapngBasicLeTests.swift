@@ -24,7 +24,6 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
             XCTAssert(pcapng.segments.count == 1)
             XCTAssert(pcapng.segments.first?.interfaces.count == 1)
             XCTAssert(pcapng.segments.first?.packetBlocks.count == 4)
-            debugPrint(pcapng)
         }
     }
     

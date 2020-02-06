@@ -7,6 +7,9 @@
 
 import Foundation
 
+/**
+Structure for PcapNG Simple Packet Block
+*/
 public struct PcapngSpb: CustomStringConvertible, PcapngPacket {
     public let blockType: UInt32
     public let blockLength: Int  // encoded as UInt32 in header

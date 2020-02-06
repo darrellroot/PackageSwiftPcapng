@@ -8,7 +8,7 @@
 import Foundation
 
 /**
- Structure for PcapNG Section Header Block
+ Class for PcapNG Section Header Block
  */
 public class PcapngShb: CustomStringConvertible {
     public let blockType: UInt32
@@ -21,8 +21,8 @@ public class PcapngShb: CustomStringConvertible {
     public var interfaces: [PcapngIdb] = []
     public var interfaceStatistics: [PcapngIsb] = []
     public var nameResolutions: [PcapngNrb] = []
-    public var packetBlocks: [PcapngPacket] = []
     public var customBlocks: [PcapngCb] = []
+    public var packetBlocks: [PcapngPacket] = []
     // TODO Options
     
     public var description: String {
