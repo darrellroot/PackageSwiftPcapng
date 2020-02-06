@@ -2,11 +2,11 @@ import XCTest
 import Network
 @testable import PackageSwiftPcapng
 
-final class PackageSwiftPcapngDifficultLeTests: XCTestCase {
+final class PackageSwiftPcapngDifficultBeTests: XCTestCase {
     // For testing get files from https://github.com/hadrielk/pcapng-test-generator
     // and point the test suite at it
-    let directory = "/Users/droot/Dropbox/programming/projects-github/pcapng-test-generator/output_le/difficult/"
-    func test200Le() {
+    let directory = "/Users/droot/Dropbox/programming/projects-github/pcapng-test-generator/output_be/difficult/"
+    func test200Be() {
         let path = directory + "test200.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -29,7 +29,7 @@ final class PackageSwiftPcapngDifficultLeTests: XCTestCase {
         }
     }
     
-    func test201Le() {
+    func test201Be() {
         let path = directory + "test201.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -54,7 +54,7 @@ final class PackageSwiftPcapngDifficultLeTests: XCTestCase {
     
     //opened an issue with https://github.com/hadrielk/pcapng-test-generator/issues/1
     //I think the test file is invalid
-/*    func test202Le() {
+/*    func test202Be() {
         let path = directory + "test202.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))

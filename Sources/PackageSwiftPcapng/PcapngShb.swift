@@ -44,18 +44,18 @@ public class PcapngShb: CustomStringConvertible {
             return nil
         }
         self.blockType = blockType
-        let blockLength = Int(Pcapng.getUInt32(data: data.advanced(by: 4)))
-        guard data.count >= blockLength && blockLength % 4 == 0 else {
-            debugPrint("PcapngShb initializer: invalid blockLength \(blockLength) data.count \(data.count)")
-            return nil
-        }
-        self.blockLength = blockLength
         let byteOrderMagic = Pcapng.getUInt32(data: data.advanced(by: 8))
         self.byteOrderMagic = byteOrderMagic
         guard byteOrderMagic == 0x1A2B3C4D || byteOrderMagic == UInt32(0x1A2B3C4D).byteSwapped else {
             debugPrint("PcapngShb invalid byteOrderMagic %x should be 0x1A2B3C4D or %x",byteOrderMagic,UInt32(0x1A2B3C4D).byteSwapped)
             return nil
         }
+        let blockLength = Int(Pcapng.getUInt32(data: data.advanced(by: 4)))
+        guard data.count >= blockLength && blockLength % 4 == 0 else {
+            debugPrint("PcapngShb initializer: invalid blockLength \(blockLength) data.count \(data.count)")
+            return nil
+        }
+        self.blockLength = blockLength
         self.majorVersion = Pcapng.getUInt16(data: data.advanced(by: 12))
         self.minorVersion = Pcapng.getUInt16(data: data.advanced(by: 14))
         self.sectionLength = Pcapng.getUInt64(data: data.advanced(by: 16))
