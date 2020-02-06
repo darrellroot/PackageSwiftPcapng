@@ -18,6 +18,7 @@ public struct PcapngOptions {
             let code = Int(Pcapng.getUInt16(data: data))
             let length = Int(Pcapng.getUInt16(data: data.advanced(by: 2)))
             print("code \(code) length \(length) startIndex \(data.startIndex)")
+            //TODO possible illegal instruction
             let value = data[data.startIndex + 4 ..< data.startIndex + 4 + length]
             if let option = PcapngOption(code: code, length: length, data: value, type: type) {
                 options.append(option)

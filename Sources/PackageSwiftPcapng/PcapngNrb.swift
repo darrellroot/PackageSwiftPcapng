@@ -75,7 +75,10 @@ public struct PcapngNrb: CustomStringConvertible {
                     return nil
                 }
                 let cStringData = data[data.startIndex + recordPosition + 8 ..< data.startIndex + recordPosition + 4 + recordLength]
-                let strings = Pcapng.getCStrings(data: cStringData)
+                var strings = Pcapng.getCStrings(data: cStringData)
+                if let oldStrings = self.ipv4records[ipv4Address] {
+                    strings = strings + oldStrings
+                }
                 self.ipv4records[ipv4Address] = strings
                 recordPosition = recordPosition + recordLength + 4 + Pcapng.paddingTo4(recordLength)
             case 2:
@@ -89,13 +92,16 @@ public struct PcapngNrb: CustomStringConvertible {
                     return nil
                 }
                 let cStringData = data[data.startIndex + recordPosition + 20 ..< data.startIndex + recordPosition + 4 + recordLength]
-                let strings = Pcapng.getCStrings(data: cStringData)
+                var strings = Pcapng.getCStrings(data: cStringData)
+                if let oldStrings = self.ipv6records[ipv6Address] {
+                    strings = strings + oldStrings
+                }
                 self.ipv6records[ipv6Address] = strings
                 recordPosition = recordPosition + recordLength + 4 + Pcapng.paddingTo4(recordLength)
             default:
                 // need to deal with future cases
                 debugPrint("PcapngNrb unknown record type \(recordType)")
-                recordPosition = recordPosition + recordLength + 4
+                recordPosition = recordPosition + recordLength + 4 + Pcapng.paddingTo4(recordLength)
             }// switch recordType
         }// while !lastRecord
         let optionsData = data[data.startIndex + recordPosition ..< data.startIndex + blockLength - 4]
