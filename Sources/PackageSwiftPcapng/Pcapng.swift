@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import Logging
 
 public struct Pcapng: CustomStringConvertible {
     static let version = "PackageSwiftPcapng version 0.0.1"
@@ -13,6 +14,7 @@ public struct Pcapng: CustomStringConvertible {
     var done = false     // set to true at end of data or when block size exceeds remaining data size
     public var segments: [PcapngShb] = []
     static var bigEndian = false
+    static let logger = Logger(label: "net.networkmom.pcapng")
     
     public var description: String {
         var output: String = "Pcapng segments \(segments.count)"
@@ -25,7 +27,7 @@ public struct Pcapng: CustomStringConvertible {
         self.originalData = inputData
         var data = inputData
         guard data.count >= 28 else {
-            debugPrint("Pcapng: Insufficient data \(data.count) bytes")
+            Pcapng.logger.error("Pcapng: Insufficient data \(data.count) bytes")
             return nil
         }
         // byteOrderMagic
@@ -34,13 +36,6 @@ public struct Pcapng: CustomStringConvertible {
         } else {
             Pcapng.bigEndian = false
         }
-        /*let byteOrderMagic = Pcapng.getUInt32(data: data.advanced(by: 8))
-        debugPrint(String(format:"byteOrderMagic 0x%x",byteOrderMagic))
-        if byteOrderMagic != 0x1a2b3c4d {
-            Pcapng.bigEndian = true
-        } else {
-            Pcapng.bigEndian = false
-        }*/
 
         while !done {
             guard data.count >= 8 else {
@@ -48,9 +43,9 @@ public struct Pcapng: CustomStringConvertible {
                 break
             }
             let blockType = Pcapng.getUInt32(data: data)
-            debugPrint(String(format:"block type 0x%x",blockType))
+            Pcapng.logger.debug("block type \(blockType)")
             let blockLength = Int(Pcapng.getUInt32(data: data.advanced(by: 4)))
-            debugPrint("blockLength \(blockLength)")
+            Pcapng.logger.debug("blockLength \(blockLength)")
             switch blockType {
             case 0x0a0d0d0a:
                 // Deal with case where endianness changes per section
@@ -61,60 +56,60 @@ public struct Pcapng: CustomStringConvertible {
                 }
 
                 if let newBlock = PcapngShb(data: data) {
-                    debugPrint(newBlock.description)
+                    Pcapng.logger.info("\(newBlock.description)")
                     segments.append(newBlock)
                 }
             case 1:
                 guard let newBlock = PcapngIdb(data: data), let lastSegment = segments.last else {
-                    debugPrint("error decoding Idb Block, aborting")
+                    Pcapng.logger.error("error decoding Idb Block, aborting")
                     done = true
                     break
                 }
-                debugPrint(newBlock.description)
+                Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.interfaces.append(newBlock)
             case 3:
                 guard let lastSegment = segments.last, let firstInterface = lastSegment.interfaces.first, let newBlock = PcapngSpb(data: data, snaplen: firstInterface.snaplen) else {
-                    debugPrint("error decoding Spb Block, aborting")
+                    Pcapng.logger.error("error decoding Spb Block, aborting")
                     done = true
                     break
                 }
-                debugPrint(newBlock.description)
+                Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.packetBlocks.append(newBlock as PcapngPacket)
             case 4:
                 guard let newBlock = PcapngNrb(data: data), let lastSegment = segments.last else {
-                    debugPrint("error decoding Nrb Block, aborting")
+                    Pcapng.logger.error("error decoding Nrb Block, aborting")
                     done = true
                     break
                 }
-                debugPrint(newBlock.description)
+                Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.nameResolutions.append(newBlock)
             case 5:
                 guard let newBlock = PcapngIsb(data: data), let lastSegment = segments.last else {
-                    debugPrint("error decoding Isb Block, aborting")
+                    Pcapng.logger.error("error decoding Isb Block, aborting")
                     done = true
                     break
                 }
-                debugPrint(newBlock.description)
+                Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.interfaceStatistics.append(newBlock)
             case 6:
                 guard let newBlock = PcapngEpb(data: data), let lastSegment = segments.last else {
-                    debugPrint("error decoding Epb Block, aborting")
+                    Pcapng.logger.error("error decoding Epb Block, aborting")
                     done = true
                     break
                 }
-                debugPrint(newBlock.description)
+                Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.packetBlocks.append(newBlock as PcapngPacket)
             case 0xbad, 0x40000bad:
                 guard let newBlock = PcapngCb(data: data), let lastSegment = segments.last else {
-                    debugPrint("error decoding custom Block, aborting")
+                    Pcapng.logger.error("error decoding custom Block, aborting")
                     done = true
                     break
                 }
-                debugPrint(newBlock.description)
+                Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.customBlocks.append(newBlock)
 
             default:
-                debugPrint("default case")
+                Pcapng.logger.error("Pcapng: default case")
                 done = true
             }
             if data.count > blockLength {
@@ -123,29 +118,27 @@ public struct Pcapng: CustomStringConvertible {
                 done = true
             }
         } // while !done
-        debugPrint(self.description)
+        Pcapng.logger.info("\(self.description)")
     }
 
     /**
      getUInt32 assumes 4 bytes exist in data or it will crash
      TODO: implement endian fix
      */
-    static func getUInt32(data: Data, verbose: Bool = false)-> UInt32 {
+    static func getUInt32(data: Data)-> UInt32 {
         let octet0: UInt32 = UInt32(data[data.startIndex])
         let octet1: UInt32 = UInt32(data[data.startIndex + 1])
         let octet2: UInt32 = UInt32(data[data.startIndex + 2])
         let octet3: UInt32 = UInt32(data[data.startIndex + 3])
-        if verbose { debugPrint(" octet0 \(octet0) octet1 \(octet1) octet2 \(octet2) octet3 \(octet3)") }
         if Pcapng.bigEndian == false {
             return octet0 + octet1 << 8 + octet2 << 16 + octet3 << 24
         } else {
             return octet0 << 24 + octet1 << 16 + octet2 << 8 + octet3
         }
     }
-    static func getUInt16(data: Data, verbose: Bool = false)-> UInt16 {
+    static func getUInt16(data: Data)-> UInt16 {
         let octet0: UInt16 = UInt16(data[data.startIndex])
         let octet1: UInt16 = UInt16(data[data.startIndex + 1])
-        if verbose { debugPrint(" octet0 \(octet0) octet1 \(octet1)") }
         if Pcapng.bigEndian == false {
             return octet0 + octet1 << 8
         } else {
@@ -172,7 +165,7 @@ public struct Pcapng: CustomStringConvertible {
     }
     static func getCStrings(data: Data) -> [String] {
         guard let bigString = String(data: data, encoding: .utf8) else {
-            debugPrint("Unable to decode strings from data \(data)")
+            Pcapng.logger.error("Unable to decode strings from data \(data)")
             return []
         }
         let substrings = bigString.split(separator: "\0", omittingEmptySubsequences: true)
