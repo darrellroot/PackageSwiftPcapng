@@ -12,6 +12,7 @@ public struct Pcapng: CustomStringConvertible {
     public let originalData: Data
     var done = false     // set to true at end of data or when block size exceeds remaining data size
     public var segments: [PcapngShb] = []
+    static var bigEndian = false
     
     public var description: String {
         var output: String = "Pcapng segments \(segments.count)"
@@ -23,18 +24,42 @@ public struct Pcapng: CustomStringConvertible {
     public init?(data inputData: Data) {
         self.originalData = inputData
         var data = inputData
-        
+        guard data.count >= 28 else {
+            debugPrint("Pcapng: Insufficient data \(data.count) bytes")
+            return nil
+        }
+        // byteOrderMagic
+        if data[8] == 0x1a && data[9] == 0x2b && data[10] == 0x3c && data[11] == 0x4d {
+            Pcapng.bigEndian = true
+        } else {
+            Pcapng.bigEndian = false
+        }
+        /*let byteOrderMagic = Pcapng.getUInt32(data: data.advanced(by: 8))
+        debugPrint(String(format:"byteOrderMagic 0x%x",byteOrderMagic))
+        if byteOrderMagic != 0x1a2b3c4d {
+            Pcapng.bigEndian = true
+        } else {
+            Pcapng.bigEndian = false
+        }*/
+
         while !done {
             guard data.count >= 8 else {
                 done = true
                 break
             }
             let blockType = Pcapng.getUInt32(data: data)
-            print("block type 0x%x",blockType)
+            debugPrint(String(format:"block type 0x%x",blockType))
             let blockLength = Int(Pcapng.getUInt32(data: data.advanced(by: 4)))
-            print("blockLength \(blockLength)")
+            debugPrint("blockLength \(blockLength)")
             switch blockType {
             case 0x0a0d0d0a:
+                // Deal with case where endianness changes per section
+                if data[8] == 0x1a && data[9] == 0x2b && data[10] == 0x3c && data[11] == 0x4d {
+                    Pcapng.bigEndian = true
+                } else {
+                    Pcapng.bigEndian = false
+                }
+
                 if let newBlock = PcapngShb(data: data) {
                     debugPrint(newBlock.description)
                     segments.append(newBlock)
@@ -111,25 +136,39 @@ public struct Pcapng: CustomStringConvertible {
         let octet2: UInt32 = UInt32(data[data.startIndex + 2])
         let octet3: UInt32 = UInt32(data[data.startIndex + 3])
         if verbose { debugPrint(" octet0 \(octet0) octet1 \(octet1) octet2 \(octet2) octet3 \(octet3)") }
-        return octet0 + octet1 << 8 + octet2 << 16 + octet3 << 24
+        if Pcapng.bigEndian == false {
+            return octet0 + octet1 << 8 + octet2 << 16 + octet3 << 24
+        } else {
+            return octet0 << 24 + octet1 << 16 + octet2 << 8 + octet3
+        }
     }
     static func getUInt16(data: Data, verbose: Bool = false)-> UInt16 {
         let octet0: UInt16 = UInt16(data[data.startIndex])
         let octet1: UInt16 = UInt16(data[data.startIndex + 1])
         if verbose { debugPrint(" octet0 \(octet0) octet1 \(octet1)") }
-        return octet0 + octet1 << 8
+        if Pcapng.bigEndian == false {
+            return octet0 + octet1 << 8
+        } else {
+            return octet0 << 8 + octet1
+        }
     }
     static func getInt64(data: Data)-> Int64 {
         let first4 = getUInt32(data: data)
         let second4 = getUInt32(data: data.advanced(by: 4))
-        let bitPattern = UInt64(first4) << 32 + UInt64(second4)
-        return Int64(bitPattern: bitPattern)
+        if Pcapng.bigEndian == false {
+            return Int64(UInt64(first4) << 32 + UInt64(second4))
+        } else {
+            return Int64(UInt64(first4) + UInt64(second4) << 32)
+        }
     }
     static func getUInt64(data: Data)-> UInt64 {
         let first4 = getUInt32(data: data)
         let second4 = getUInt32(data: data.advanced(by: 4))
-        let bitPattern = UInt64(first4) << 32 + UInt64(second4)
-        return bitPattern
+        if Pcapng.bigEndian == false {
+            return UInt64(first4) << 32 + UInt64(second4)
+        } else {
+            return UInt64(first4) + UInt64(second4) << 32
+        }
     }
     static func getCStrings(data: Data) -> [String] {
         guard let bigString = String(data: data, encoding: .utf8) else {

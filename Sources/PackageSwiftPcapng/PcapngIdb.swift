@@ -40,7 +40,7 @@ public struct PcapngIdb: CustomStringConvertible {
         }
         self.blockLength = blockLength
         self.linkType = Int(Pcapng.getUInt16(data: data.advanced(by: 8)))
-        self.snaplen = Int(Pcapng.getUInt16(data: data.advanced(by: 12)))
+        self.snaplen = Int(Pcapng.getUInt32(data: data.advanced(by: 12)))
         let finalBlockLength = Pcapng.getUInt32(data: data.advanced(by: Int(blockLength) - 4))
         guard finalBlockLength == blockLength else {
             debugPrint("PcapngIdb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")

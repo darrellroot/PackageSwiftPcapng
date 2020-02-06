@@ -39,12 +39,18 @@ public struct PcapngSpb: CustomStringConvertible, PcapngPacket {
             return nil
         }
         self.blockLength = blockLength
-        self.originalLength = Int(Pcapng.getUInt32(data: data.advanced(by: 8)))
+        let originalLength = Int(Pcapng.getUInt32(data: data.advanced(by: 8)))
+        self.originalLength = originalLength
         guard data.count >= snaplen + 16 else {
             debugPrint("PcapngSpb initializer: snaplen \(snaplen) does not match data \(data.count)")
             return nil
         }
-        self.packetData = data[data.startIndex + 12 ..< data.startIndex + 12 + snaplen]
+        if snaplen == 0 {
+            self.packetData = data[data.startIndex + 12 ..< data.startIndex + 12 + originalLength]
+        } else {
+            let minLength = min(snaplen, originalLength)
+            self.packetData = data[data.startIndex + 12 ..< data.startIndex + 12 + minLength]
+        }
         self.finalBlockLength = Int(Pcapng.getUInt32(data: data.advanced(by: Int(blockLength) - 4)))
         guard finalBlockLength == blockLength else {
             debugPrint("PcapngSpb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")

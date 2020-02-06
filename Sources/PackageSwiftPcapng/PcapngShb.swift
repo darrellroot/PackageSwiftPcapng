@@ -16,7 +16,7 @@ public class PcapngShb: CustomStringConvertible {
     public let byteOrderMagic: UInt32
     public let majorVersion: UInt16
     public let minorVersion: UInt16
-    public let sectionLength: Int64
+    public let sectionLength: UInt64
     public var options: [PcapngOption] = []
     public var interfaces: [PcapngIdb] = []
     public var interfaceStatistics: [PcapngIsb] = []
@@ -33,6 +33,7 @@ public class PcapngShb: CustomStringConvertible {
         return output
     }
     init?(data: Data, verbose: Bool = false) {
+
         guard data.count >= 28 && data.count % 4 == 0 else {
             debugPrint("Pcapng Section Header Block initializer: Invalid data.count \(data.count)")
             return nil
@@ -57,7 +58,7 @@ public class PcapngShb: CustomStringConvertible {
         }
         self.majorVersion = Pcapng.getUInt16(data: data.advanced(by: 12))
         self.minorVersion = Pcapng.getUInt16(data: data.advanced(by: 14))
-        self.sectionLength = Pcapng.getInt64(data: data.advanced(by: 16))
+        self.sectionLength = Pcapng.getUInt64(data: data.advanced(by: 16))
         let finalBlockLength = Pcapng.getUInt32(data: data.advanced(by: Int(blockLength) - 4))
         guard finalBlockLength == blockLength else {
             debugPrint("PcapngShb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")

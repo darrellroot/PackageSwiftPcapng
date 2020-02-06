@@ -2,11 +2,11 @@ import XCTest
 import Network
 @testable import PackageSwiftPcapng
 
-final class PackageSwiftPcapngBasicLeTests: XCTestCase {
+final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     // For testing get files from https://github.com/hadrielk/pcapng-test-generator
     // and point the test suite at it
-    let directory = "/Users/droot/Dropbox/programming/projects-github/pcapng-test-generator/output_le/basic/"
-    func test001Le() {
+    let directory = "/Users/droot/Dropbox/programming/projects-github/pcapng-test-generator/output_be/basic/"
+    func test001Be() {
         let path = directory + "test001.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -30,7 +30,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
     
-    func test002Le() {
+    func test002Be() {
         let path = directory + "test002.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -53,7 +53,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test003Le() {
+    func test003Be() {
         let path = directory + "test003.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -76,7 +76,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
     
-    func test004Le() {
+    func test004Be() {
         let path = directory + "test004.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -107,7 +107,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test005Le() {
+    func test005Be() {
         let path = directory + "test005.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -136,7 +136,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test006Le() {
+    func test006Be() {
         let path = directory + "test006.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -158,7 +158,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test007Le() {
+    func test007Be() {
         let path = directory + "test007.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -181,7 +181,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
 
-    func test008Le() {
+    func test008Be() {
         let path = directory + "test008.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -207,7 +207,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test009Le() {
+    func test009Be() {
         let path = directory + "test009.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -229,7 +229,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
     
-    func test010Le() {
+    func test010Be() {
         let path = directory + "test010.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -257,7 +257,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test011Le() {
+    func test011Be() {
         let path = directory + "test011.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -279,7 +279,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test012Le() {
+    func test012Be() {
         let path = directory + "test012.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -311,7 +311,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test013Le() {
+    func test013Be() {
         let path = directory + "test013.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -334,7 +334,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test014Le() {
+    func test014Be() {
         let path = directory + "test014.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -357,7 +357,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test015Le() {
+    func test015Be() {
         let path = directory + "test015.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -382,7 +382,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test016Le() {
+    func test016Be() {
         let path = directory + "test016.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -405,7 +405,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test017Le() {
+    func test017Be() {
         let path = directory + "test017.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))
@@ -433,7 +433,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
         }
     }
 
-    func test018Le() {
+    func test018Be() {
         let path = directory + "test018.pcapng"
         let result: Result<Data,Error> = Result {
             try Data(contentsOf: URL(fileURLWithPath: path))

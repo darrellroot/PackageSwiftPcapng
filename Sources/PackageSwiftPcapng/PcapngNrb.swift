@@ -77,7 +77,7 @@ public struct PcapngNrb: CustomStringConvertible {
                 let cStringData = data[data.startIndex + recordPosition + 8 ..< data.startIndex + recordPosition + 4 + recordLength]
                 let strings = Pcapng.getCStrings(data: cStringData)
                 self.ipv4records[ipv4Address] = strings
-                recordPosition = recordPosition + recordLength + 4
+                recordPosition = recordPosition + recordLength + 4 + Pcapng.paddingTo4(recordLength)
             case 2:
                 guard recordLength >= 18 else {
                     debugPrint("PcapNrb initializer: invalid record length \(recordLength)")
@@ -91,7 +91,7 @@ public struct PcapngNrb: CustomStringConvertible {
                 let cStringData = data[data.startIndex + recordPosition + 20 ..< data.startIndex + recordPosition + 4 + recordLength]
                 let strings = Pcapng.getCStrings(data: cStringData)
                 self.ipv6records[ipv6Address] = strings
-                recordPosition = recordPosition + recordLength + 4
+                recordPosition = recordPosition + recordLength + 4 + Pcapng.paddingTo4(recordLength)
             default:
                 // need to deal with future cases
                 debugPrint("PcapngNrb unknown record type \(recordType)")
