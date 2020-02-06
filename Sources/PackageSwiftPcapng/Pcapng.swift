@@ -14,7 +14,7 @@ public struct Pcapng: CustomStringConvertible {
     var done = false     // set to true at end of data or when block size exceeds remaining data size
     public var segments: [PcapngShb] = []
     static var bigEndian = false
-    static let logger = Logger(label: "net.networkmom.pcapng")
+    public static let logger = Logger(label: "net.networkmom.pcapng")
     
     public var description: String {
         var output: String = "Pcapng segments \(segments.count)"

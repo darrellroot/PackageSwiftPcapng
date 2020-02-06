@@ -69,7 +69,8 @@ public class PcapngShb: CustomStringConvertible {
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .shb)
 
-        debugPrint(self.description)
-        
+        if verbose {
+            debugPrint(self.description)
+        }
     }
 }
