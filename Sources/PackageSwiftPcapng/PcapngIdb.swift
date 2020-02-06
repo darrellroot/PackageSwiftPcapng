@@ -24,18 +24,18 @@ public struct PcapngIdb: CustomStringConvertible {
     }
     init?(data: Data, verbose: Bool = false) {
         guard data.count >= 20 && data.count % 4 == 0 else {
-            debugPrint("Pcapidg Section Header Block initializer: Invalid data.count \(data.count)")
+            Pcapng.logger.error("Pcapidg Section Header Block initializer: Invalid data.count \(data.count)")
             return nil
         }
         let blockType = Pcapng.getUInt32(data: data)
         guard blockType == 1 else {
-            debugPrint("PcapngIdb: Invalid blocktype 0x%x should be 1", blockType)
+            Pcapng.logger.error("PcapngIdb: Invalid blocktype \(blockType) should be 1")
             return nil
         }
         self.blockType = blockType
         let blockLength = Int(Pcapng.getUInt32(data: data.advanced(by: 4)))
         guard data.count >= blockLength && blockLength % 4 == 0 else {
-            debugPrint("PcapngIdb initializer: invalid blockLength \(blockLength) data.count \(data.count)")
+            Pcapng.logger.error("PcapngIdb initializer: invalid blockLength \(blockLength) data.count \(data.count)")
             return nil
         }
         self.blockLength = blockLength
@@ -43,11 +43,11 @@ public struct PcapngIdb: CustomStringConvertible {
         self.snaplen = Int(Pcapng.getUInt32(data: data.advanced(by: 12)))
         let finalBlockLength = Pcapng.getUInt32(data: data.advanced(by: Int(blockLength) - 4))
         guard finalBlockLength == blockLength else {
-            debugPrint("PcapngIdb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")
+            Pcapng.logger.error("PcapngIdb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")
             return nil
         }
         let optionsData = data[data.startIndex + 16 ..< data.startIndex + blockLength - 4]
-        debugPrint("PcapngIdb options data count \(optionsData.count)")
+        Pcapng.logger.info("PcapngIdb options data count \(optionsData.count)")
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .idb)
 

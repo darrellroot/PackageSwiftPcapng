@@ -44,11 +44,11 @@ public enum PcapngOption: CustomStringConvertible {
     static func getCString(length: Int, data: Data) -> String? {
         let cString = data[data.startIndex ..< data.startIndex + length]
         guard var string = String(data: cString, encoding: .utf8) else {
-            debugPrint("PcapngOption unable to get string from \(cString)")
+            Pcapng.logger.error("PcapngOption unable to get string from \(cString)")
             return nil
         }
         if let nullIndex = string.firstIndex(of: "\0"){
-            debugPrint("PcapngOption found null at index \(nullIndex)")
+            Pcapng.logger.error("PcapngOption found null at index \(nullIndex)")
             string.removeSubrange(nullIndex ..< string.endIndex)
         }
         return string
@@ -59,7 +59,7 @@ public enum PcapngOption: CustomStringConvertible {
         
         
         
-        debugPrint("PcapngOption.init code \(code) length \(length) data \(data)")
+        Pcapng.logger.info("PcapngOption.init code \(code) length \(length) data \(data)")
         switch (type, code) {
         case (_ , 0):
             self = .endofopt
@@ -152,7 +152,7 @@ public enum PcapngOption: CustomStringConvertible {
                 }
                 hash = data[data.startIndex + 1 ..< data.startIndex + 5]
             default:
-                debugPrint("Invalid Epb hash algorithm \(algorithm)")
+                Pcapng.logger.error("Invalid Epb hash algorithm \(algorithm)")
                 return nil
             }
             self = .hash(algorithm: algorithm, hash: hash)
@@ -204,26 +204,26 @@ public enum PcapngOption: CustomStringConvertible {
             self = .usrDeliv(usrDeliv)
         case (.nrb, 2):  // ns_dnsname
             guard let name = String(data: data[data.startIndex ..< data.startIndex + length], encoding: .utf8) else {
-                debugPrint("nrb option unable to decode dnsname string from data \(data) length \(length)")
+                Pcapng.logger.error("nrb option unable to decode dnsname string from data \(data) length \(length)")
                 return nil
             }
             self = .dnsName(name)
         case (.nrb, 3): // ns_dnsIPv4addr
             guard data.count >= 4, let ipv4Address = IPv4Address(data) else {
-                debugPrint("nrb option 3 unable to decode ipv4 address from \(data)")
+                Pcapng.logger.error("nrb option 3 unable to decode ipv4 address from \(data)")
                 return nil
             }
             self = .dnsIpv4Address(ipv4Address)
         case (.nrb, 4): // ns_dnsIPv4addr
             guard data.count >= 16, let ipv6Address = IPv6Address(data) else {
-                debugPrint("nrb option 3 unable to decode ipv6 address from \(data)")
+                Pcapng.logger.error("nrb option 3 unable to decode ipv6 address from \(data)")
                 return nil
             }
             self = .dnsIpv6Address(ipv6Address)
 
             
         default:
-            debugPrint("unimplemented option code \(code)")
+            Pcapng.logger.error("unimplemented option code \(code)")
             return nil
         }
     }// init

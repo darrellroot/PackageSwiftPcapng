@@ -32,25 +32,25 @@ public struct PcapngNrb: CustomStringConvertible {
     }
     init?(data: Data, verbose: Bool = false) {
         guard data.count >= 12 && data.count % 4 == 0 else {
-            debugPrint("PcapNrb Name Resolution Block initializer: Invalid data.count \(data.count)")
+            Pcapng.logger.error("PcapNrb Name Resolution Block initializer: Invalid data.count \(data.count)")
             return nil
         }
         let blockType = Pcapng.getUInt32(data: data)
         guard blockType == 4 else {
-            debugPrint("PcapngNrb: Invalid blocktype 0x%x should be 4", blockType)
+            Pcapng.logger.error("PcapngNrb: Invalid blocktype \(blockType) should be 4")
             return nil
         }
         self.blockType = blockType
         let blockLength = Int(Pcapng.getUInt32(data: data.advanced(by: 4)))
         guard data.count >= blockLength && blockLength % 4 == 0 else {
-            debugPrint("PcapngNrb initializer: invalid blockLength \(blockLength) data.count \(data.count)")
+            Pcapng.logger.error("PcapngNrb initializer: invalid blockLength \(blockLength) data.count \(data.count)")
             return nil
         }
         self.blockLength = blockLength
         let finalBlockLength = Int(Pcapng.getUInt32(data: data.advanced(by: blockLength - 4)))
         self.finalBlockLength = finalBlockLength
         guard finalBlockLength == blockLength else {
-            debugPrint("PcapNrb initializer: blockLength \(blockLength) finalBlockLength \(finalBlockLength)")
+            Pcapng.logger.info("PcapNrb initializer: blockLength \(blockLength) finalBlockLength \(finalBlockLength)")
             return nil
         }
         
@@ -66,12 +66,12 @@ public struct PcapngNrb: CustomStringConvertible {
                 lastRecord = true
             case 1: // nrb_record_ipv4
                 guard recordLength >= 6 else {
-                    debugPrint("PcapNrb initializer: invalid record length \(recordLength)")
+                    Pcapng.logger.error("PcapNrb initializer: invalid record length \(recordLength)")
                     return nil
                 }
                 let ipv4Data = data[data.startIndex + recordPosition + 4 ..< data.startIndex + recordPosition + 8]
                 guard let ipv4Address = IPv4Address(ipv4Data) else {
-                    debugPrint("PcapNrb initializer: unable to decode ipv4 address from \(ipv4Data)")
+                    Pcapng.logger.error("PcapNrb initializer: unable to decode ipv4 address from \(ipv4Data)")
                     return nil
                 }
                 let cStringData = data[data.startIndex + recordPosition + 8 ..< data.startIndex + recordPosition + 4 + recordLength]
@@ -83,12 +83,12 @@ public struct PcapngNrb: CustomStringConvertible {
                 recordPosition = recordPosition + recordLength + 4 + Pcapng.paddingTo4(recordLength)
             case 2:
                 guard recordLength >= 18 else {
-                    debugPrint("PcapNrb initializer: invalid record length \(recordLength)")
+                    Pcapng.logger.error("PcapNrb initializer: invalid record length \(recordLength)")
                     return nil
                 }
                 let ipv6Data = data[data.startIndex + recordPosition + 4 ..< data.startIndex + recordPosition + 20]
                 guard let ipv6Address = IPv6Address(ipv6Data) else {
-                    debugPrint("PcapNrb initializer: unable to decode ipv6 address from \(ipv6Data)")
+                    Pcapng.logger.error("PcapNrb initializer: unable to decode ipv6 address from \(ipv6Data)")
                     return nil
                 }
                 let cStringData = data[data.startIndex + recordPosition + 20 ..< data.startIndex + recordPosition + 4 + recordLength]
@@ -100,12 +100,12 @@ public struct PcapngNrb: CustomStringConvertible {
                 recordPosition = recordPosition + recordLength + 4 + Pcapng.paddingTo4(recordLength)
             default:
                 // need to deal with future cases
-                debugPrint("PcapngNrb unknown record type \(recordType)")
+                Pcapng.logger.error("PcapngNrb unknown record type \(recordType)")
                 recordPosition = recordPosition + recordLength + 4 + Pcapng.paddingTo4(recordLength)
             }// switch recordType
         }// while !lastRecord
         let optionsData = data[data.startIndex + recordPosition ..< data.startIndex + blockLength - 4]
-        debugPrint("PcapngNrb options data count \(optionsData.count)")
+        Pcapng.logger.info("PcapngNrb options data count \(optionsData.count)")
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .nrb)
 

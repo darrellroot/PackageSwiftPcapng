@@ -29,18 +29,18 @@ public struct PcapngEpb: CustomStringConvertible, PcapngPacket {
     }
     init?(data: Data, verbose: Bool = false) {
         guard data.count >= 32 && data.count % 4 == 0 else {
-            debugPrint("PcapEpb Section Header Block initializer: Invalid data.count \(data.count)")
+            Pcapng.logger.error("PcapEpb Section Header Block initializer: Invalid data.count \(data.count)")
             return nil
         }
         let blockType = Pcapng.getUInt32(data: data)
         guard blockType == 6 else {
-            debugPrint("PcapngEpb: Invalid blocktype 0x%x should be 6", blockType)
+            Pcapng.logger.error("PcapngEpb: Invalid blocktype \(blockType) should be 6")
             return nil
         }
         self.blockType = blockType
         let blockLength = Int(Pcapng.getUInt32(data: data.advanced(by: 4)))
         guard data.count >= blockLength && blockLength % 4 == 0 else {
-            debugPrint("PcapngIdb initializer: invalid blockLength \(blockLength) data.count \(data.count)")
+            Pcapng.logger.error("PcapngIdb initializer: invalid blockLength \(blockLength) data.count \(data.count)")
             return nil
         }
         self.blockLength = blockLength
@@ -53,11 +53,11 @@ public struct PcapngEpb: CustomStringConvertible, PcapngPacket {
         self.packetData = data[data.startIndex + 28 ..< data.startIndex + 28 + capturedLength]
         self.finalBlockLength = Int(Pcapng.getUInt32(data: data.advanced(by: Int(blockLength) - 4)))
         guard finalBlockLength == blockLength else {
-            debugPrint("PcapngIdb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")
+            Pcapng.logger.error("PcapngIdb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")
             return nil
         }
         let optionsData = data[data.startIndex + 28 + capturedLength + Pcapng.paddingTo4(capturedLength) ..< data.startIndex + blockLength - 4]
-        debugPrint("PcapngEpb options data count \(optionsData.count)")
+        Pcapng.logger.info("PcapngEpb options data count \(optionsData.count)")
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .epb)
 

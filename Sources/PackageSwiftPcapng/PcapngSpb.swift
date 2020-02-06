@@ -24,25 +24,25 @@ public struct PcapngSpb: CustomStringConvertible, PcapngPacket {
     }
     init?(data: Data, snaplen: Int, verbose: Bool = false) {
         guard data.count >= 32 && data.count % 4 == 0 else {
-            debugPrint("PcapngSpb Simple Packet Block initializer: Invalid data.count \(data.count)")
+            Pcapng.logger.error("PcapngSpb Simple Packet Block initializer: Invalid data.count \(data.count)")
             return nil
         }
         let blockType = Pcapng.getUInt32(data: data)
         guard blockType == 3 else {
-            debugPrint("PcapngSpb: Invalid blocktype 0x%x should be 6", blockType)
+            Pcapng.logger.error("PcapngSpb: Invalid blocktype \(blockType) should be 6")
             return nil
         }
         self.blockType = blockType
         let blockLength = Int(Pcapng.getUInt32(data: data.advanced(by: 4)))
         guard data.count >= blockLength && blockLength % 4 == 0 else {
-            debugPrint("PcapngSpb initializer: invalid blockLength \(blockLength) data.count \(data.count)")
+            Pcapng.logger.error("PcapngSpb initializer: invalid blockLength \(blockLength) data.count \(data.count)")
             return nil
         }
         self.blockLength = blockLength
         let originalLength = Int(Pcapng.getUInt32(data: data.advanced(by: 8)))
         self.originalLength = originalLength
         guard data.count >= snaplen + 16 else {
-            debugPrint("PcapngSpb initializer: snaplen \(snaplen) does not match data \(data.count)")
+            Pcapng.logger.error("PcapngSpb initializer: snaplen \(snaplen) does not match data \(data.count)")
             return nil
         }
         if snaplen == 0 {
@@ -53,7 +53,7 @@ public struct PcapngSpb: CustomStringConvertible, PcapngPacket {
         }
         self.finalBlockLength = Int(Pcapng.getUInt32(data: data.advanced(by: Int(blockLength) - 4)))
         guard finalBlockLength == blockLength else {
-            debugPrint("PcapngSpb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")
+            Pcapng.logger.error("PcapngSpb: firstBlockLength \(blockLength) does not match finalBlockLength \(blockLength)")
             return nil
         }
 
