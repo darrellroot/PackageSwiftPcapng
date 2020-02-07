@@ -49,7 +49,7 @@ public class PcapngEpb: CustomStringConvertible, PcapngPacket {
         self.interfaceId = Int(Pcapng.getUInt32(data: data.advanced(by: 8)))
         let timestampHigh = Pcapng.getUInt32(data: data.advanced(by: 12))
         let timestampLow = Pcapng.getUInt32(data: data.advanced(by: 16))
-        self.timestamp = UInt64(timestampHigh) << 64 + UInt64(timestampLow)
+        self.timestamp = UInt64(timestampHigh) << 32 + UInt64(timestampLow)
         let capturedLength = Int(Pcapng.getUInt32(data: data.advanced(by: 20)))
         self.capturedLength = capturedLength
         self.originalLength = Int(Pcapng.getUInt32(data: data.advanced(by: 24)))

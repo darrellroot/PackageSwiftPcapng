@@ -6,6 +6,28 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     // For testing get files from https://github.com/hadrielk/pcapng-test-generator
     // and point the test suite at it
     let directory = "/Users/droot/Dropbox/programming/projects-github/pcapng-test-generator/output_le/basic/"
+    func testTime() {
+        let path = directory + "cap1.pcapng"
+            let result: Result<Data,Error> = Result {
+                try Data(contentsOf: URL(fileURLWithPath: path))
+            }
+            switch result {
+            case .failure(let error):
+                debugPrint(error)
+                XCTFail()
+                return
+            case .success(let data):
+                XCTAssert(data.count > 0)
+                guard let pcapng = Pcapng(data: data) else {
+                    XCTFail()
+                    return
+                }
+                XCTAssert(pcapng.segments.count == 1)
+                XCTAssert(pcapng.segments.first?.interfaces.count == 1)
+                XCTAssert(pcapng.segments.first?.packetBlocks.count == 7)
+                
+            }
+        }
     func test001Le() {
         let path = directory + "test001.pcapng"
         let result: Result<Data,Error> = Result {
