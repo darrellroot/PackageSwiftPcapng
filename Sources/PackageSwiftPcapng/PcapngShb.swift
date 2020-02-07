@@ -71,6 +71,12 @@ public class PcapngShb: CustomStringConvertible {
 
         // time to set dates in all enhanced packets
         
+        
+        if verbose {
+            debugPrint(self.description)
+        }
+    }
+    public func updateDates() {
         for genericPacket in packetBlocks {
             if let enhancedPacket = genericPacket as? PcapngEpb, let interface = self.interfaces[safe: enhancedPacket.interfaceId] {
                 switch interface.timevalue {
@@ -85,9 +91,6 @@ public class PcapngShb: CustomStringConvertible {
                 }
             }
         }
-        
-        if verbose {
-            debugPrint(self.description)
-        }
+
     }
 }

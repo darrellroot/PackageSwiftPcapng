@@ -118,6 +118,9 @@ public struct Pcapng: CustomStringConvertible {
                 done = true
             }
         } // while !done
+        for segment in segments {
+            segment.updateDates()
+        }
         Pcapng.logger.info("\(self.description)")
     }
 
