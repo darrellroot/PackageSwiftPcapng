@@ -47,7 +47,12 @@ public enum PcapngOption: CustomStringConvertible {
     case dnsName(String)
     case dnsIpv4Address(IPv4Address)
     case dnsIpv6Address(IPv6Address)
-    
+    // type = any
+    case custom2988(enterprise: UInt32,data: Data) //
+    case custom2989(enterprise: UInt32,data: Data) //
+    case custom19372(enterprise: UInt32, data: Data) //
+    case custom19373(enterprise: UInt32, data: Data) //
+
     static func getCString(length: Int, data: Data) -> String? {
         let cString = data[data.startIndex ..< data.startIndex + length]
         guard var string = String(data: cString, encoding: .utf8) else {
@@ -68,6 +73,27 @@ public enum PcapngOption: CustomStringConvertible {
         
         Pcapng.logger.info("PcapngOption.init code \(code) length \(length) data \(data)")
         switch (type, code) {
+        case (_ , 2988):
+            let enterprise = Pcapng.getUInt32(data: data.advanced(by: 4))
+            let customData = data[data.startIndex + 4 ..< data.startIndex + length]
+            self = .custom2988(enterprise: enterprise, data: customData)
+            return
+        case (_ , 2989):
+            let enterprise = Pcapng.getUInt32(data: data.advanced(by: 4))
+            let customData = data[data.startIndex + 4 ..< data.startIndex + length]
+            self = .custom2989(enterprise: enterprise, data: customData)
+            return
+        case (_ , 19372):
+            let enterprise = Pcapng.getUInt32(data: data.advanced(by: 4))
+            let customData = data[data.startIndex + 4 ..< data.startIndex + length]
+            self = .custom19372(enterprise: enterprise, data: customData)
+            return
+        case (_ , 19373):
+            let enterprise = Pcapng.getUInt32(data: data.advanced(by: 4))
+            let customData = data[data.startIndex + 4 ..< data.startIndex + length]
+            self = .custom19373(enterprise: enterprise, data: customData)
+            return
+
         case (_ , 0):
             self = .endofopt
             return
@@ -369,6 +395,17 @@ public enum PcapngOption: CustomStringConvertible {
             return "dnsIpv4Address \(ip)"
         case .dnsIpv6Address(let ip):
             return "dnsIpv6Address \(ip)"
+        case .custom2988(let enterprise, let data):
+            return "custom2988 enterprise \(enterprise) data \(data.count) bytes"
+        case .custom2989(let enterprise, let data):
+            return "custom2989 enterprise \(enterprise) data \(data.count) bytes"
+            
+        case .custom19372(let enterprise, let data):
+            return "custom19372 enterprise \(enterprise) data \(data.count) bytes"
+            
+        case .custom19373(let enterprise, let data):
+            return "custom19373 enterprise \(enterprise) data \(data.count) bytes"
+            
         }
     }
     
