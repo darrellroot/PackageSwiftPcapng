@@ -7,12 +7,14 @@
 
 import Foundation
 
-public struct PcapngEpb: CustomStringConvertible, PcapngPacket {
+public class PcapngEpb: CustomStringConvertible, PcapngPacket {
     public let blockType: UInt32
     public let blockLength: Int  // encoded as UInt32 in header
     public let interfaceId: Int
-    public let timestampHigh: Int
-    public let timestampLow: Int
+    //public let timestampHigh: Int
+    //public let timestampLow: Int
+    public let timestamp: UInt64
+    public var date: Date? = nil // set by parent after initialization
     public let capturedLength: Int
     public let originalLength: Int
     public let packetData: Data  // packet data
@@ -21,7 +23,7 @@ public struct PcapngEpb: CustomStringConvertible, PcapngPacket {
     // TODO Options
     
     public var description: String {
-        var output = String(format: "PcapngEpb blockType 0x%x blockLength %d interfaceId %x timestampHigh %d timestampLow %d capturedLength %d originalLength %d packetData.count %d options.count %d\n",blockType, blockLength, interfaceId, timestampHigh, timestampLow, capturedLength, originalLength, packetData.count, options.count)
+        var output = String(format: "PcapngEpb blockType 0x%x blockLength %d interfaceId %x timestamp %d capturedLength %d originalLength %d packetData.count %d options.count %d\n",blockType, blockLength, interfaceId, timestamp, capturedLength, originalLength, packetData.count, options.count)
         for option in options {
             output.append("  \(option.description)\n)")
         }
@@ -45,8 +47,9 @@ public struct PcapngEpb: CustomStringConvertible, PcapngPacket {
         }
         self.blockLength = blockLength
         self.interfaceId = Int(Pcapng.getUInt32(data: data.advanced(by: 8)))
-        self.timestampHigh = Int(Pcapng.getUInt32(data: data.advanced(by: 12)))
-        self.timestampLow = Int(Pcapng.getUInt32(data: data.advanced(by: 16)))
+        let timestampHigh = Pcapng.getUInt32(data: data.advanced(by: 12))
+        let timestampLow = Pcapng.getUInt32(data: data.advanced(by: 16))
+        self.timestamp = UInt64(timestampHigh) << 64 + UInt64(timestampLow)
         let capturedLength = Int(Pcapng.getUInt32(data: data.advanced(by: 20)))
         self.capturedLength = capturedLength
         self.originalLength = Int(Pcapng.getUInt32(data: data.advanced(by: 24)))

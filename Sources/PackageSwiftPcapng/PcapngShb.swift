@@ -69,6 +69,23 @@ public class PcapngShb: CustomStringConvertible {
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .shb)
 
+        // time to set dates in all enhanced packets
+        
+        for genericPacket in packetBlocks {
+            if let enhancedPacket = genericPacket as? PcapngEpb, let interface = self.interfaces[safe: enhancedPacket.interfaceId] {
+                switch interface.timevalue {
+                case 6: // microseconds
+                    let seconds = Double(enhancedPacket.timestamp) / 1000000.0
+                    enhancedPacket.date = Date(timeIntervalSince1970: seconds)
+                case 9: // nanoseconds
+                    let seconds = Double(enhancedPacket.timestamp) / 1000000000.0
+                    enhancedPacket.date = Date(timeIntervalSince1970: seconds)
+                default: // do nothing
+                    break
+                }
+            }
+        }
+        
         if verbose {
             debugPrint(self.description)
         }
