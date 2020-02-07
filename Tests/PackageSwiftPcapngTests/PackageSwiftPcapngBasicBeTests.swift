@@ -201,7 +201,7 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
             XCTAssert(pcapng.segments.first?.interfaces.count == 2)
             XCTAssert(pcapng.segments.first?.packetBlocks.count == 4)
             XCTAssert(pcapng.segments.first?.interfaces[1].snaplen == 128)
-            XCTAssert(pcapng.segments.first?.interfaces[1].options[2].description == "fcslen 0")
+            XCTAssert(pcapng.segments.first?.interfaces[1].options[2].description == "custom19372 enterprise 1634428192 data 10 bytes")
             XCTAssert(pcapng.segments.first?.interfaces[0].options[4].description == "ipv6 2100:db8::1a2b/64")
 
         }
