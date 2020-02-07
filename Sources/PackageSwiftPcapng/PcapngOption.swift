@@ -24,6 +24,13 @@ public enum PcapngOption: CustomStringConvertible {
     case ipv6Address(ip: IPv6Address, prefix: Int) //5
     case macaddr(String) //6
     case euiaddr(String) //7
+    case ifSpeed(UInt64) //8
+    case tsresol(UInt8) //9
+    case tzone(UInt) //10
+    case filter(String) //11
+    case ifOs(String) //12
+    case fcslen(UInt8) //13
+    case tsoffset(UInt64) //14
     // type = epb
     case flags(UInt32) //2
     case hash(algorithm: UInt8, hash: Data)
@@ -112,6 +119,66 @@ public enum PcapngOption: CustomStringConvertible {
             }
             let prefix = Int(data[data.startIndex + 16])
             self = .ipv6Address(ip: ipv6Address,prefix: prefix)
+            return
+            /*    case macaddr(String) //6
+            case euiaddr(String) //7
+            case ifSpeed(UInt64) //8
+            case tsresol(UInt8) //9
+            case tzone(UInt) //10
+            case filter(String) //11
+            case ifOs(String) //12
+            case fcslen(UInt8) //13
+            case tsoffset(UInt64) //14*/
+        case (.idb, 6):
+            guard data.count >= 6 else {
+                return nil
+            }
+            self = .macaddr(String(format: "%2x:%2x:%2x:%2x:%2x:%2x",data[data.startIndex],data[data.startIndex+1],data[data.startIndex+2],data[data.startIndex+3],data[data.startIndex+4],data[data.startIndex+5]))
+            return
+        case (.idb, 7):
+            guard data.count >= 8 else {
+                return nil
+            }
+            self = .euiaddr(String(format: "%2x:%2x:%2x:%2x:%2x:%2x:%2x:%2x",data[data.startIndex],data[data.startIndex+1],data[data.startIndex+2],data[data.startIndex+3],data[data.startIndex+4],data[data.startIndex+5],data[data.startIndex+6],data[data.startIndex+7]))
+            return
+        case (.idb,8):
+            guard data.count >= 8 else {
+                return nil
+            }
+            self = .ifSpeed(Pcapng.getUInt64(data: data))
+            return
+        case (.idb,9):
+            self = .tsresol(data[data.startIndex])
+            return
+        case (.idb,10):
+            guard data.count >= 4 else {
+                return nil
+            }
+            self = .tzone(UInt(Pcapng.getUInt32(data: data)))
+            return
+        case (.idb,11):
+            guard let filter = String(data: data[data.startIndex ..< data.startIndex + length], encoding: .utf8) else {
+                Pcapng.logger.error("idb option unable to decode filter string from data \(data) length \(length)")
+                return nil
+            }
+            self = .filter(filter)
+            return
+        case (.idb,12):
+            guard let ifos = String(data: data[data.startIndex ..< data.startIndex + length], encoding: .utf8) else {
+                Pcapng.logger.error("idb option unable to decode interface OS string from data \(data) length \(length)")
+                return nil
+            }
+            self = .ifOs(ifos)
+            return
+        case (.idb,13):
+            self = .fcslen(data[data.startIndex])
+            return
+        case (.idb,14):
+            guard data.count >= 8 else {
+                Pcapng.logger.error("idb option unable to decode if_tsoffset from data \(data)")
+                return nil
+            }
+            self = .tsoffset(Pcapng.getUInt64(data: data))
             return
         case (.epb, 2):
             guard data.count >= 4 else {
@@ -261,6 +328,20 @@ public enum PcapngOption: CustomStringConvertible {
             return "mac-address \(mac)"
         case .euiaddr(let eui):
             return "eui-address \(eui)"
+        case .ifSpeed(let speed):
+            return "ifSpeed \(speed)"
+        case .tsresol(let timeRes):
+            return "tsresol \(timeRes)"
+        case .tzone(let tzone):
+            return "timeZone \(tzone)"
+        case .filter(let filter):
+            return "filter \(filter)"
+        case .ifOs(let ifos):
+            return "interface OS \(ifos)"
+        case .fcslen(let fcslen):
+            return "fcslen \(fcslen)"
+        case .tsoffset(let tsoffset):
+            return "tsoffset \(tsoffset)"
         case .flags(let flags):
             let description = String(format: "flags %x",flags)
             return description

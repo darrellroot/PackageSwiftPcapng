@@ -13,6 +13,7 @@ public struct PcapngIdb: CustomStringConvertible {
     public let linkType: Int
     public let snaplen: Int
     public var options: [PcapngOption] = []
+    public var timevalue: UInt8 = 6  // set to whatever the if_tsresol is
     // TODO Options
     
     public var description: String {
@@ -51,6 +52,11 @@ public struct PcapngIdb: CustomStringConvertible {
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .idb)
 
+        for option in options {
+            if case let PcapngOption.tsresol(value) = option {
+                self.timevalue = value
+            }
+        }
         if verbose {
             debugPrint(self.description)
         }
