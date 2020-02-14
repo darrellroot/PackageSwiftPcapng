@@ -1,6 +1,6 @@
 # PackageSwiftPcapng
 
-Waring: PackageSwiftPcapng is a 0.x release.  The API and resulting data structure are not guaranteed to be stable.
+**Warning: PackageSwiftPcapng is a 0.x release.  The API and resulting data structure are not guaranteed to be stable.**
 
 .pcapng files encode network packet captures.  .pcapng replaces the older .pcap file format and is the default output format used by Wireshark.  The pcapng file format is documented at https://github.com/pcapng/pcapng/   A set of test .pcapng files for decode is at https://github.com/hadrielk/pcapng-test-generator
 
