@@ -126,7 +126,6 @@ public struct Pcapng: CustomStringConvertible {
 
     /**
      getUInt32 assumes 4 bytes exist in data or it will crash
-     TODO: implement endian fix
      */
     static func getUInt32(data: Data)-> UInt32 {
         let octet0: UInt32 = UInt32(data[data.startIndex])
