@@ -14,32 +14,32 @@ At this time PackageSwiftPcapng is read-only, and does not support creating .pca
 
 To use PackageSwiftPcapng in your project, add PackageSwiftPcap to your project and add the following imports:
 
-import PackageSwiftPcapng
-import Logging  (optional)
+    import PackageSwiftPcapng
+    import Logging  (optional)
 
 The Pcapng data structure follows the hierarchy of the .pcapng data format:
 
-public struct Pcapng
-    public var segments: [PcapngShb]
-        public var options: [PcapngOption]
-        public var interfaces: [PcapngIsb]
-        public var nameResolutions: [PcapngNrb]
-        public var customBlocks: [PcapngCb]
-        public var packetBlocks: [PcapngPacket]
+    public struct Pcapng
+        public var segments: [PcapngShb]
+            public var options: [PcapngOption]
+            public var interfaces: [PcapngIsb]
+            public var nameResolutions: [PcapngNrb]
+            public var customBlocks: [PcapngCb]
+            public var packetBlocks: [PcapngPacket]
         
 PcapngPacket is a protocol with an implementation for each type of packet block supported by .pcapng.  In particular, the packet (actually full frame) data itself is available to be fed into a decoder.  Note that this data may not be the full frame size depending on the SNAPLEN when the capture occurred (the captured SNAPLEN is in the interfaces data structure).
 
-public protocol PcapngPacket: CustomStringConvertible {
-    var blockType: UInt32 { get }
-    var blockLength: Int { get }
-    var originalLength: Int { get }
-    var packetData: Data { get }
-    var finalBlockLength: Int { get }
-    var description: String { get }
-}
+    public protocol PcapngPacket: CustomStringConvertible {
+        var blockType: UInt32 { get }
+        var blockLength: Int { get }
+        var originalLength: Int { get }
+        var packetData: Data { get }
+        var finalBlockLength: Int { get }
+        var description: String { get }
+    }
 
-public class PcapngEpb  (Enhanced Packet block)
-public class PcapngSpb  (Simple Packet block)
+    public class PcapngEpb  (Enhanced Packet block)
+    public class PcapngSpb  (Simple Packet block)
 
 "Simple" pcapng files have one segment, one interface, and multiple packets captured from that interface.  Here's an example of grabbing the array of PcapngPacket from a 1-segment 1-interface .pcapng and feeding it into the PackageEtherCapture frame decoder for analysis:
 
