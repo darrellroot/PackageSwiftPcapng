@@ -10,12 +10,12 @@ import Logging
 
 public struct PcapPacket: CustomStringConvertible {
     
-    let seconds: Int
-    let microSeconds: Int
-    let date: Date
-    let capturedLength: Int
-    let originalLength: Int
-    let packetData: Data
+    public let seconds: Int
+    public let microSeconds: Int
+    public let date: Date
+    public let capturedLength: Int
+    public let originalLength: Int
+    public let packetData: Data
     
     public var description: String {
         return "PcapPacket description placeholder"
