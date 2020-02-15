@@ -107,9 +107,11 @@ public struct Pcapng: CustomStringConvertible {
                 }
                 Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.customBlocks.append(newBlock)
-
+            case 0x80000001:
+                Pcapng.logger.info("Pcapng: Darwin process event block, ignoring")
+                
             default:
-                Pcapng.logger.error("Pcapng: default case")
+                Pcapng.logger.error("Pcapng: default case blockType \(blockType)")
                 done = true
             }
             if data.count > blockLength {
