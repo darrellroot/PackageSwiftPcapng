@@ -59,6 +59,9 @@ public enum PcapngOption: CustomStringConvertible {
             Pcapng.logger.error("PcapngOption unable to get string from \(cString)")
             return nil
         }
+        if string.last == "\0" {
+            string.removeLast()
+        }
         if let nullIndex = string.firstIndex(of: "\0"){
             Pcapng.logger.error("PcapngOption found null at index \(nullIndex)")
             string.removeSubrange(nullIndex ..< string.endIndex)
