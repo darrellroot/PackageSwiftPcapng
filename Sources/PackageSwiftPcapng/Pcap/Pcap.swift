@@ -37,6 +37,7 @@ public struct Pcap: CustomStringConvertible {
     public let versionMinor: UInt16
     public let thiszone: UInt32  // GMT to local correction
     public let sigfigs: UInt32 //accuracy of timestamps
+    public let snaplen: UInt32
     public let network: UInt32  // data link type
     //var done = false     // set to true at end of data or when block size exceeds remaining data size
     public var packets: [PcapPacket] = []
@@ -63,9 +64,10 @@ public struct Pcap: CustomStringConvertible {
         self.versionMinor = Pcap.getUInt16(data: data.advanced(by: 6))
         self.thiszone = Pcap.getUInt32(data: data.advanced(by: 8))
         self.sigfigs = Pcap.getUInt32(data: data.advanced(by: 12))
-        self.network = Pcap.getUInt32(data: data.advanced(by: 16))
+        self.snaplen = Pcap.getUInt32(data: data.advanced(by: 16))
+        self.network = Pcap.getUInt32(data: data.advanced(by: 20))
         
-        var nextPacketPointer = 20
+        var nextPacketPointer = 24
         
         while nextPacketPointer < (data.count - 16) {
             
