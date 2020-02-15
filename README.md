@@ -91,9 +91,9 @@ The frame decoder is from PackageEtherCapture https://github.com/darrellroot/Pac
 
 ## The Pcap data structure is simpler
 
-  public struct Pcap
-      public var packets: [PcapPacket]
-          public let packetData: Data
+    public struct Pcap
+        public var packets: [PcapPacket]
+            public let packetData: Data
 
 ## Related repositories:
 
