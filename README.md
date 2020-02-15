@@ -2,24 +2,56 @@
 
 **Warning: PackageSwiftPcapng is a 0.x release.  The API and resulting data structure are not guaranteed to be stable.**
 
-.pcapng files encode network packet captures.  .pcapng replaces the older .pcap file format and is the default output format used by Wireshark.  The pcapng file format is documented at https://github.com/pcapng/pcapng/   A set of test .pcapng files for decode is at https://github.com/hadrielk/pcapng-test-generator
+## Background
 
-This package takes a stream of Data (presumably of a .pcapng data file) and attempts to decode it with a failable initializer, gnerating a Pcapng data structure:
+.pcapng files encode network packet captures.  .pcapng replaces the older .pcap file format and is the default output format used by Wireshark.  The pcapng file format is documented at https://github.com/pcapng/pcapng/   A set of test .pcapng files for decode is at https://github.com/hadrielk/pcapng-test-generator  The older .pcap file format is documented at https://wiki.wireshark.org/Development/LibpcapFileFormat   The tcpdump CLI application packaged with MacOS sometimes outputs .pcap and sometimes outputs .pcapng format depending on command-line arguments.
+
+## PackageSwiftPcapng Functionality
+
+PackageSwiftPcapng performs 3 functions:
+
+1. Reads an array of Data and determines if the start of the file has the .pcapng or .pcap "magic number".
+
+2. Reads an array of Data and interprets it as a .pcapng file, returning a Pcapng() data structure.
+
+3. Reads an array of Data and interprets it as a .pcap file, returning a Pcap() data structure.
+
+## Determining File Type
+
+    public enum PcapType {
+        case pcap
+        case pcapng
+        case neither
+    public static func detect(data: Data) -> PcapType {}
+    
+    switch PcapType.detect(data: data) {
+        case .pcap:
+        case .pcapng:
+        case .neither:
+    }
+
+## Reading .pcapng file
 
         let data = try Data(contentsOf: url)
         let pcapng = Pcapng(data: data)
+        
+## Reading .pcap file
+
+        let data = try Data(contentsOf: url)
+        let pcapng = try Pcapng(data: data)
 
 PackageSwiftPcapng uses Apple's swift-log API for logging.  See https://github.com/apple/swift-log
-Bootstrapping the logging system is not required to use PackageSwiftPcapng.
+Bootstrapping the logging system is not required to use PackageSwiftPcapng, but failure to bootstrap logging may
+result in significiant text output to STDOUT or STDERR.
 
-At this time PackageSwiftPcapng is read-only, and does not support creating .pcapng files.
+At this time PackageSwiftPcapng is read-only, and does not support creating .pcapng or .pcap files.
 
 To use PackageSwiftPcapng in your project, add PackageSwiftPcap to your project and add the following imports:
 
     import PackageSwiftPcapng
     import Logging  (optional)
 
-The Pcapng data structure follows the hierarchy of the .pcapng data format:
+## The Pcapng data structure follows the hierarchy of the .pcapng data format:
 
     public struct Pcapng
         public var segments: [PcapngShb]
@@ -56,3 +88,18 @@ PcapngPacket is a protocol with an implementation for each type of packet block 
 
 The above code segment is from the CLI version of etherdump https://github.com/darrellroot/etherdump
 The frame decoder is from PackageEtherCapture https://github.com/darrellroot/PackageEtherCapture
+
+## The Pcap data structure is simpler
+
+  public struct Pcap
+      public var packets: [PcapPacket]
+          public let packetData: Data
+
+## Related repositories:
+
+**PackageEtherCapture** includes a Frame data structure.  Ethernet packetData can be fed directly into the Frame()
+initializer and decoded.
+
+**etherdump** is a CLI application which uses PackageSwiftPcapng
+
+**Etherdump** is a GUI application which uses PackageSwiftPcapng
