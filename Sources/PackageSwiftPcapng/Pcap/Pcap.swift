@@ -27,10 +27,10 @@ public enum PcapError: Error, CustomStringConvertible {
 }
 
 public struct Pcap: CustomStringConvertible {
-    static var bigEndian = false
+    public static var bigEndian = false
 
     public var description: String = "placeholder"
-        
+    public var bigEndian = false
     public let originalData: Data
     public let magicNumber: UInt32
     public let versionMajor: UInt16
@@ -54,8 +54,10 @@ public struct Pcap: CustomStringConvertible {
         switch magicNumber {
         case 0xa1b2c3d4:
             Pcap.bigEndian = false
+            self.bigEndian = false
         case 0xd4c3b2a1:
             Pcap.bigEndian = true
+            self.bigEndian = true
         default:
             let magicString = String(format: "%x",magicNumber)
             throw PcapError.badMagicNumber(message: magicString)
