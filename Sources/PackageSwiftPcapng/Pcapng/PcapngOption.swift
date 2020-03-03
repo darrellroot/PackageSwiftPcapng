@@ -52,6 +52,10 @@ public enum PcapngOption: CustomStringConvertible {
     case custom2989(enterprise: UInt32,data: Data) //
     case custom19372(enterprise: UInt32, data: Data) //
     case custom19373(enterprise: UInt32, data: Data) //
+    case darwinDpebId(UInt32)  // 32769
+    case darwinSrvClass(UInt32)  //32770
+    case darwinEdpebId(UInt32) // 32771
+    case darwin32772(UInt32)
 
     static func getCString(length: Int, data: Data) -> String? {
         let cString = data[data.startIndex ..< data.startIndex + length]
@@ -253,9 +257,31 @@ public enum PcapngOption: CustomStringConvertible {
             }
             self = .hash(algorithm: algorithm, hash: hash)
             return
-            //case flags(UInt32) //2
-            //case hash(type: UInt8, hash: Data) // 3
-        //case dropcount(UInt64) // 8
+        case (.epb, 32769):
+            guard data.count >= 4 else {
+                return nil
+            }
+            let dpebId = Pcapng.getUInt32(data: data)
+            self = .darwinDpebId(dpebId)
+        case (.epb, 32770):
+            guard data.count >= 4 else {
+                return nil
+            }
+            let srvClass = Pcapng.getUInt32(data: data)
+            self = .darwinSrvClass(srvClass)
+
+        case (.epb, 32771):
+            guard data.count >= 4 else {
+                return nil
+            }
+            let edpebId = Pcapng.getUInt32(data: data)
+            self = .darwinEdpebId(edpebId)
+        case (.epb, 32772):
+            guard data.count >= 4 else {
+                return nil
+            }
+            let number = Pcapng.getUInt32(data: data)
+            self = .darwin32772(number)
         case (.isb, 2):
             guard data.count >= 8 else {
                 return nil
@@ -409,6 +435,14 @@ public enum PcapngOption: CustomStringConvertible {
         case .custom19373(let enterprise, let data):
             return "custom19373 enterprise \(enterprise) data \(data.count) bytes"
             
+        case .darwinDpebId(let dpebId):
+            return "Darwin Dpeb Id \(dpebId)"
+        case .darwinSrvClass(let srvClass):
+            return "Darwin service class \(srvClass)"
+        case .darwinEdpebId(let edPebId):
+            return "Darwin Process Event Block Id \(edPebId)"
+        case .darwin32772(let number):
+            return "Darwin Epb option 32772 number \(number)"
         }
     }
     
