@@ -62,19 +62,19 @@ public struct Pcap: CustomStringConvertible {
             let magicString = String(format: "%x",magicNumber)
             throw PcapError.badMagicNumber(message: magicString)
         }
-        self.versionMajor = Pcap.getUInt16(data: data.advanced(by: 4))
-        self.versionMinor = Pcap.getUInt16(data: data.advanced(by: 6))
-        self.thiszone = Pcap.getUInt32(data: data.advanced(by: 8))
-        self.sigfigs = Pcap.getUInt32(data: data.advanced(by: 12))
-        self.snaplen = Pcap.getUInt32(data: data.advanced(by: 16))
-        self.network = Pcap.getUInt32(data: data.advanced(by: 20))
+        self.versionMajor = Pcap.getUInt16(data: data[data.startIndex + 4 ..< data.startIndex + 6])
+        self.versionMinor = Pcap.getUInt16(data: data[data.startIndex + 6 ..< data.startIndex + 8])
+        self.thiszone = Pcap.getUInt32(data: data[data.startIndex + 8 ..< data.startIndex + 12])
+        self.sigfigs = Pcap.getUInt32(data: data[data.startIndex + 12 ..< data.startIndex + 16])
+        self.snaplen = Pcap.getUInt32(data: data[data.startIndex + 16 ..< data.startIndex + 20])
+        self.network = Pcap.getUInt32(data: data[data.startIndex + 20 ..< data.startIndex + 24])
         
         var nextPacketPointer = 24
         
         while nextPacketPointer < (data.count - 16) {
             
             do {
-                let packet = try PcapPacket(data: data.advanced(by: nextPacketPointer))
+                let packet = try PcapPacket(data: data[data.startIndex + nextPacketPointer ..< data.endIndex])
                 guard packet.capturedLength > 0 else {
                     return
                 }
@@ -116,7 +116,7 @@ public struct Pcap: CustomStringConvertible {
     }
     static func getInt64(data: Data)-> Int64 {
         let first4 = getUInt32(data: data)
-        let second4 = getUInt32(data: data.advanced(by: 4))
+        let second4 = getUInt32(data: data[data.startIndex + 4 ..< data.startIndex + 8])
         if Pcap.bigEndian == false {
             return Int64(UInt64(first4) << 32 + UInt64(second4))
         } else {
@@ -125,7 +125,7 @@ public struct Pcap: CustomStringConvertible {
     }
     static func getUInt64(data: Data)-> UInt64 {
         let first4 = getUInt32(data: data)
-        let second4 = getUInt32(data: data.advanced(by: 4))
+        let second4 = getUInt32(data: data[data.startIndex + 4 ..< data.startIndex + 8])
         if Pcap.bigEndian == false {
             return UInt64(first4) << 32 + UInt64(second4)
         } else {
