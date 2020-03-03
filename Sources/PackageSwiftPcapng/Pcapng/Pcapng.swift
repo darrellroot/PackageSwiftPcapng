@@ -36,31 +36,31 @@ public struct Pcapng: CustomStringConvertible {
         } else {
             Pcapng.bigEndian = false
         }
-
+        var position = 0
         while !done {
-            guard data.count >= 8 else {
+            guard data.count - position >= 8 else {
                 done = true
                 break
             }
-            let blockType = Pcapng.getUInt32(data: data)
+            let blockType = Pcapng.getUInt32(data: data[data.startIndex + position ..< data.startIndex + position + 4])
             Pcapng.logger.debug("block type \(blockType)")
-            let blockLength = Int(Pcapng.getUInt32(data: data.advanced(by: 4)))
+            let blockLength = Int(Pcapng.getUInt32(data: data[data.startIndex + position + 4 ..< data.startIndex + position + 8]))
             Pcapng.logger.debug("blockLength \(blockLength)")
             switch blockType {
             case 0x0a0d0d0a:
                 // Deal with case where endianness changes per section
-                if data[8] == 0x1a && data[9] == 0x2b && data[10] == 0x3c && data[11] == 0x4d {
+                if data[data.startIndex + position + 8] == 0x1a && data[data.startIndex + position + 9] == 0x2b && data[data.startIndex + position + 10] == 0x3c && data[data.startIndex + position + 11] == 0x4d {
                     Pcapng.bigEndian = true
                 } else {
                     Pcapng.bigEndian = false
                 }
 
-                if let newBlock = PcapngShb(data: data) {
+                if let newBlock = PcapngShb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength]) {
                     Pcapng.logger.info("\(newBlock.description)")
                     segments.append(newBlock)
                 }
             case 1:
-                guard let newBlock = PcapngIdb(data: data), let lastSegment = segments.last else {
+                guard let newBlock = PcapngIdb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength]), let lastSegment = segments.last else {
                     Pcapng.logger.error("error decoding Idb Block, aborting")
                     done = true
                     break
@@ -68,7 +68,7 @@ public struct Pcapng: CustomStringConvertible {
                 Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.interfaces.append(newBlock)
             case 3:
-                guard let lastSegment = segments.last, let firstInterface = lastSegment.interfaces.first, let newBlock = PcapngSpb(data: data, snaplen: firstInterface.snaplen) else {
+                guard let lastSegment = segments.last, let firstInterface = lastSegment.interfaces.first, let newBlock = PcapngSpb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength], snaplen: firstInterface.snaplen) else {
                     Pcapng.logger.error("error decoding Spb Block, aborting")
                     done = true
                     break
@@ -76,7 +76,7 @@ public struct Pcapng: CustomStringConvertible {
                 Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.packetBlocks.append(newBlock as PcapngPacket)
             case 4:
-                guard let newBlock = PcapngNrb(data: data), let lastSegment = segments.last else {
+                guard let newBlock = PcapngNrb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength]), let lastSegment = segments.last else {
                     Pcapng.logger.error("error decoding Nrb Block, aborting")
                     done = true
                     break
@@ -84,7 +84,7 @@ public struct Pcapng: CustomStringConvertible {
                 Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.nameResolutions.append(newBlock)
             case 5:
-                guard let newBlock = PcapngIsb(data: data), let lastSegment = segments.last else {
+                guard let newBlock = PcapngIsb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength]), let lastSegment = segments.last else {
                     Pcapng.logger.error("error decoding Isb Block, aborting")
                     done = true
                     break
@@ -92,7 +92,7 @@ public struct Pcapng: CustomStringConvertible {
                 Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.interfaceStatistics.append(newBlock)
             case 6:
-                guard let newBlock = PcapngEpb(data: data), let lastSegment = segments.last else {
+                guard let newBlock = PcapngEpb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength]), let lastSegment = segments.last else {
                     Pcapng.logger.error("error decoding Epb Block, aborting")
                     done = true
                     break
@@ -100,7 +100,7 @@ public struct Pcapng: CustomStringConvertible {
                 Pcapng.logger.info("\(newBlock.description)")
                 lastSegment.packetBlocks.append(newBlock as PcapngPacket)
             case 0xbad, 0x40000bad:
-                guard let newBlock = PcapngCb(data: data), let lastSegment = segments.last else {
+                guard let newBlock = PcapngCb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength]), let lastSegment = segments.last else {
                     Pcapng.logger.error("error decoding custom Block, aborting")
                     done = true
                     break
@@ -114,11 +114,7 @@ public struct Pcapng: CustomStringConvertible {
                 Pcapng.logger.error("Pcapng: default case blockType \(blockType)")
                 done = true
             }
-            if data.count > blockLength {
-                data = data.advanced(by: blockLength)
-            } else {
-                done = true
-            }
+            position = position + blockLength
         } // while !done
         for segment in segments {
             segment.updateDates()
@@ -151,7 +147,7 @@ public struct Pcapng: CustomStringConvertible {
     }
     static func getInt64(data: Data)-> Int64 {
         let first4 = getUInt32(data: data)
-        let second4 = getUInt32(data: data.advanced(by: 4))
+        let second4 = getUInt32(data: data[data.startIndex + 4 ..< data.startIndex + 8])
         if Pcapng.bigEndian == false {
             return Int64(UInt64(first4) << 32 + UInt64(second4))
         } else {
@@ -160,7 +156,7 @@ public struct Pcapng: CustomStringConvertible {
     }
     static func getUInt64(data: Data)-> UInt64 {
         let first4 = getUInt32(data: data)
-        let second4 = getUInt32(data: data.advanced(by: 4))
+        let second4 = getUInt32(data: data[data.startIndex + 4 ..< data.startIndex + 8])
         if Pcapng.bigEndian == false {
             return UInt64(first4) << 32 + UInt64(second4)
         } else {
