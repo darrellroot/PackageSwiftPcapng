@@ -3,13 +3,18 @@ import Network
 @testable import PackageSwiftPcapng
 
 final class PackageSwiftPcapngDifficultBeTests: XCTestCase {
-    // For testing get files from https://github.com/hadrielk/pcapng-test-generator
-    // and point the test suite at it
-    let directory = "/Users/droot/Dropbox/programming/projects-github/pcapng-test-generator/output_be/difficult/"
+    func getPcapngURL(forResource basename: String, withExtension ext: String) -> URL {
+      return Bundle.module.url(
+        forResource: basename, 
+        withExtension: ext,
+        subdirectory: "Resources/output_be/difficult"
+      )!
+    }
+
     func test200Be() {
-        let path = directory + "test200.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test200", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -30,9 +35,9 @@ final class PackageSwiftPcapngDifficultBeTests: XCTestCase {
     }
     
     func test201Be() {
-        let path = directory + "test201.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test201", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):

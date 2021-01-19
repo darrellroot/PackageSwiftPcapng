@@ -30,9 +30,15 @@ let package = Package(
             name: "PackageSwiftPcapng",
             dependencies: [
               .product(name: "Logging", package: "swift-log"),
-            ]),
+            ]
+        ),
         .testTarget(
             name: "PackageSwiftPcapngTests",
-            dependencies: ["PackageSwiftPcapng"]),
+            dependencies: ["PackageSwiftPcapng"],
+            resources: [
+              .copy("Resources"),
+              // .process("Resources"),
+            ]
+        ),
     ]
 )
