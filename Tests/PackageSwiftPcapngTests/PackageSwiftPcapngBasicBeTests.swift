@@ -3,13 +3,18 @@ import Network
 @testable import PackageSwiftPcapng
 
 final class PackageSwiftPcapngBasicBeTests: XCTestCase {
-    // For testing get files from https://github.com/hadrielk/pcapng-test-generator
-    // and point the test suite at it
-    let directory = "/Users/droot/Dropbox/programming/projects-github/pcapng-test-generator/output_be/basic/"
+    func getPcapngURL(forResource basename: String, withExtension ext: String) -> URL {
+      return Bundle.module.url(
+        forResource: basename, 
+        withExtension: ext,
+        subdirectory: "Resources/output_be/basic"
+      )!
+    }
+
     func test001Be() {
-        let path = directory + "test001.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test001", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -31,9 +36,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
     
     func test002Be() {
-        let path = directory + "test002.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test002", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -54,9 +59,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test003Be() {
-        let path = directory + "test003.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test003", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -77,9 +82,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
     
     func test004Be() {
-        let path = directory + "test004.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test004", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -108,9 +113,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test005Be() {
-        let path = directory + "test005.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test005", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -137,9 +142,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test006Be() {
-        let path = directory + "test006.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test006", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -159,9 +164,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test007Be() {
-        let path = directory + "test007.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test007", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -182,9 +187,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
 
 
     func test008Be() {
-        let path = directory + "test008.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test008", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -208,9 +213,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test009Be() {
-        let path = directory + "test009.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test009", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -230,9 +235,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
     
     func test010Be() {
-        let path = directory + "test010.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test010", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -258,9 +263,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test011Be() {
-        let path = directory + "test011.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test011", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -280,9 +285,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test012Be() {
-        let path = directory + "test012.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test012", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -312,9 +317,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test013Be() {
-        let path = directory + "test013.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test013", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -335,9 +340,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test014Be() {
-        let path = directory + "test014.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test014", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -358,9 +363,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test015Be() {
-        let path = directory + "test015.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test015", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -383,9 +388,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test016Be() {
-        let path = directory + "test016.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test016", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -406,9 +411,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test017Be() {
-        let path = directory + "test017.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test017", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -434,9 +439,9 @@ final class PackageSwiftPcapngBasicBeTests: XCTestCase {
     }
 
     func test018Be() {
-        let path = directory + "test018.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test018", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
