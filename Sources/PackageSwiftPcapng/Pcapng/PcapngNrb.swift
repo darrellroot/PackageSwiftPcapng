@@ -20,10 +20,10 @@ public struct PcapngNrb: CustomStringConvertible {
     public var description: String {
         var output = String(format: "PcapngNrb blockType 0x%x blockLength %d ipv4records %d ipv6records %dx options.count %d\n",blockType, blockLength, ipv4records.keys.count, ipv6records.keys.count, options.count)
         for key in ipv4records.keys {
-            output.append(" \(key) \(ipv4records[key])")
+            output.append(" \(key) \(String(describing: ipv4records[key]))")
         }
         for key in ipv6records.keys {
-            output.append(" \(key) \(ipv6records[key])")
+            output.append(" \(key) \(String(describing: ipv6records[key]))")
         }
         for option in options {
             output.append("  \(option.description)\n)")

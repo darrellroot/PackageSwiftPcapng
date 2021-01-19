@@ -25,7 +25,7 @@ public struct Pcapng: CustomStringConvertible {
     }
     public init?(data inputData: Data) {
         self.originalData = inputData
-        var data = inputData
+        let data = inputData
         guard data.count >= 28 else {
             Pcapng.logger.error("Pcapng: Insufficient data \(data.count) bytes")
             return nil
