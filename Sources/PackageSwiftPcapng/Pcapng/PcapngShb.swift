@@ -65,7 +65,7 @@ public class PcapngShb: CustomStringConvertible {
             return nil
         }
         let optionsData = data[data.startIndex + 24 ..< data.startIndex + blockLength - 4]
-        Pcapng.logger.info("PcapngShb options data count \(optionsData.count)")
+        Pcapng.logger.trace("PcapngShb options data count \(optionsData.count)")
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .shb)
 

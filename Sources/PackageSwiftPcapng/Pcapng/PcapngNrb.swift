@@ -50,7 +50,7 @@ public struct PcapngNrb: CustomStringConvertible {
         let finalBlockLength = Int(Pcapng.getUInt32(data: data.advanced(by: blockLength - 4)))
         self.finalBlockLength = finalBlockLength
         guard finalBlockLength == blockLength else {
-            Pcapng.logger.info("PcapNrb initializer: blockLength \(blockLength) finalBlockLength \(finalBlockLength)")
+            Pcapng.logger.trace("PcapNrb initializer: blockLength \(blockLength) finalBlockLength \(finalBlockLength)")
             return nil
         }
         
@@ -105,7 +105,7 @@ public struct PcapngNrb: CustomStringConvertible {
             }// switch recordType
         }// while !lastRecord
         let optionsData = data[data.startIndex + recordPosition ..< data.startIndex + blockLength - 4]
-        Pcapng.logger.info("PcapngNrb options data count \(optionsData.count)")
+        Pcapng.logger.trace("PcapngNrb options data count \(optionsData.count)")
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .nrb)
 

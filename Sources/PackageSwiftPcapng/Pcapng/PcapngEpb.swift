@@ -60,7 +60,7 @@ public class PcapngEpb: CustomStringConvertible, PcapngPacket {
             return nil
         }
         let optionsData = data[data.startIndex + 28 + capturedLength + Pcapng.paddingTo4(capturedLength) ..< data.startIndex + blockLength - 4]
-        Pcapng.logger.info("PcapngEpb options data count \(optionsData.count)")
+        Pcapng.logger.trace("PcapngEpb options data count \(optionsData.count)")
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .epb)
 

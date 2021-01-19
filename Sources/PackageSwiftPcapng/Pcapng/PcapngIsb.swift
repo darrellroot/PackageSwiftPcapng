@@ -54,7 +54,7 @@ public struct PcapngIsb: CustomStringConvertible {
         }
         self.finalBlockLength = finalBlockLength
         let optionsData = data[data.startIndex + 20 ..< data.startIndex + blockLength - 4]
-        Pcapng.logger.info("PcapngIsb options data count \(optionsData.count)")
+        Pcapng.logger.debug("PcapngIsb options data count \(optionsData.count)")
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .isb)
 
