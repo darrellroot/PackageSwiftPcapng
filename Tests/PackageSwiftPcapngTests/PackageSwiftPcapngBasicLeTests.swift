@@ -11,6 +11,7 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
       )!
     }
 
+    // NOTE: Not sure where the cap1.pcapng file lives.
     // func testTime() {
     //     let path = directory + "cap1.pcapng"
     //         let result: Result<Data,Error> = Result {
