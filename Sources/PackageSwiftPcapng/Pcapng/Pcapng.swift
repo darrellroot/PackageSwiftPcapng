@@ -25,7 +25,7 @@ public struct Pcapng: CustomStringConvertible {
     }
     public init?(data inputData: Data) {
         self.originalData = inputData
-        var data = inputData
+        let data = inputData
         guard data.count >= 28 else {
             Pcapng.logger.error("Pcapng: Insufficient data \(data.count) bytes")
             return nil
@@ -56,7 +56,7 @@ public struct Pcapng: CustomStringConvertible {
                 }
 
                 if let newBlock = PcapngShb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength]) {
-                    Pcapng.logger.info("\(newBlock.description)")
+                    Pcapng.logger.trace("\(newBlock.description)")
                     segments.append(newBlock)
                 }
             case 1:
@@ -65,7 +65,7 @@ public struct Pcapng: CustomStringConvertible {
                     done = true
                     break
                 }
-                Pcapng.logger.info("\(newBlock.description)")
+                Pcapng.logger.trace("\(newBlock.description)")
                 lastSegment.interfaces.append(newBlock)
             case 3:
                 guard let lastSegment = segments.last, let firstInterface = lastSegment.interfaces.first, let newBlock = PcapngSpb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength], snaplen: firstInterface.snaplen) else {
@@ -73,7 +73,7 @@ public struct Pcapng: CustomStringConvertible {
                     done = true
                     break
                 }
-                Pcapng.logger.info("\(newBlock.description)")
+                Pcapng.logger.trace("\(newBlock.description)")
                 lastSegment.packetBlocks.append(newBlock as PcapngPacket)
             case 4:
                 guard let newBlock = PcapngNrb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength]), let lastSegment = segments.last else {
@@ -81,7 +81,7 @@ public struct Pcapng: CustomStringConvertible {
                     done = true
                     break
                 }
-                Pcapng.logger.info("\(newBlock.description)")
+                Pcapng.logger.trace("\(newBlock.description)")
                 lastSegment.nameResolutions.append(newBlock)
             case 5:
                 guard let newBlock = PcapngIsb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength]), let lastSegment = segments.last else {
@@ -89,7 +89,7 @@ public struct Pcapng: CustomStringConvertible {
                     done = true
                     break
                 }
-                Pcapng.logger.info("\(newBlock.description)")
+                Pcapng.logger.trace("\(newBlock.description)")
                 lastSegment.interfaceStatistics.append(newBlock)
             case 6:
                 guard let newBlock = PcapngEpb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength]), let lastSegment = segments.last else {
@@ -97,7 +97,7 @@ public struct Pcapng: CustomStringConvertible {
                     done = true
                     break
                 }
-                Pcapng.logger.info("\(newBlock.description)")
+                Pcapng.logger.trace("\(newBlock.description)")
                 lastSegment.packetBlocks.append(newBlock as PcapngPacket)
             case 0xbad, 0x40000bad:
                 guard let newBlock = PcapngCb(data: data[data.startIndex + position ..< data.startIndex + position + blockLength]), let lastSegment = segments.last else {
@@ -105,10 +105,10 @@ public struct Pcapng: CustomStringConvertible {
                     done = true
                     break
                 }
-                Pcapng.logger.info("\(newBlock.description)")
+                Pcapng.logger.trace("\(newBlock.description)")
                 lastSegment.customBlocks.append(newBlock)
             case 0x80000001:
-                Pcapng.logger.info("Pcapng: Darwin process event block, ignoring")
+                Pcapng.logger.trace("Pcapng: Darwin process event block, ignoring")
                 
             default:
                 Pcapng.logger.error("Pcapng: default case blockType \(blockType)")
@@ -119,7 +119,7 @@ public struct Pcapng: CustomStringConvertible {
         for segment in segments {
             segment.updateDates()
         }
-        Pcapng.logger.info("\(self.description)")
+        Pcapng.logger.trace("\(self.description)")
     }
 
     /**

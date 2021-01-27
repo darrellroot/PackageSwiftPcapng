@@ -78,7 +78,7 @@ public enum PcapngOption: CustomStringConvertible {
         
         
         
-        Pcapng.logger.info("PcapngOption.init code \(code) length \(length) data \(data)")
+        Pcapng.logger.debug("PcapngOption.init code \(code) length \(length) data \(data)")
         switch (type, code) {
         case (_ , 2988):
             let enterprise = Pcapng.getUInt32(data: data.advanced(by: 4))

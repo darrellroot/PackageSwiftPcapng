@@ -48,7 +48,7 @@ public struct PcapngIdb: CustomStringConvertible {
             return nil
         }
         let optionsData = data[data.startIndex + 16 ..< data.startIndex + blockLength - 4]
-        Pcapng.logger.info("PcapngIdb options data count \(optionsData.count)")
+        Pcapng.logger.trace("PcapngIdb options data count \(optionsData.count)")
 
         self.options = PcapngOptions.makeOptions(data: optionsData, type: .idb)
 

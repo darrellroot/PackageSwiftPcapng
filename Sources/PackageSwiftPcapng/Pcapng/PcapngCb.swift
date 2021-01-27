@@ -16,7 +16,7 @@ public struct PcapngCb: CustomStringConvertible {
     // TODO Options
     
     public var description: String {
-        var output = String(format: "PcapngCb blockType 0x%x blockLength %d enterpriseNumber %d customDataCount %d\n",blockType, blockLength, enterpriseNumber, customDataAndOptions.count)
+        let output = String(format: "PcapngCb blockType 0x%x blockLength %d enterpriseNumber %d customDataCount %d\n",blockType, blockLength, enterpriseNumber, customDataAndOptions.count)
         return output
     }
     init?(data: Data, verbose: Bool = false) {
