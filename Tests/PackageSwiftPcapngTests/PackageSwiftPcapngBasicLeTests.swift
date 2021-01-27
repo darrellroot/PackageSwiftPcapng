@@ -3,35 +3,41 @@ import Network
 @testable import PackageSwiftPcapng
 
 final class PackageSwiftPcapngBasicLeTests: XCTestCase {
-    // For testing get files from https://github.com/hadrielk/pcapng-test-generator
-    // and point the test suite at it
-    let directory = "/Users/droot/Dropbox/programming/projects-github/pcapng-test-generator/output_le/basic/"
-    func testTime() {
-        let path = directory + "cap1.pcapng"
-            let result: Result<Data,Error> = Result {
-                try Data(contentsOf: URL(fileURLWithPath: path))
-            }
-            switch result {
-            case .failure(let error):
-                debugPrint(error)
-                XCTFail()
-                return
-            case .success(let data):
-                XCTAssert(data.count > 0)
-                guard let pcapng = Pcapng(data: data) else {
-                    XCTFail()
-                    return
-                }
-                XCTAssert(pcapng.segments.count == 1)
-                XCTAssert(pcapng.segments.first?.interfaces.count == 1)
-                XCTAssert(pcapng.segments.first?.packetBlocks.count == 7)
+    func getPcapngURL(forResource basename: String, withExtension ext: String) -> URL {
+      return Bundle.module.url(
+        forResource: basename, 
+        withExtension: ext,
+        subdirectory: "Resources/output_le/basic"
+      )!
+    }
+
+    // NOTE: Not sure where the cap1.pcapng file lives.
+    // func testTime() {
+    //     let path = directory + "cap1.pcapng"
+    //         let result: Result<Data,Error> = Result {
+    //             try Data(contentsOf: URL(fileURLWithPath: path))
+    //         }
+    //         switch result {
+    //         case .failure(let error):
+    //             debugPrint(error)
+    //             XCTFail()
+    //             return
+    //         case .success(let data):
+    //             XCTAssert(data.count > 0)
+    //             guard let pcapng = Pcapng(data: data) else {
+    //                 XCTFail()
+    //                 return
+    //             }
+    //             XCTAssert(pcapng.segments.count == 1)
+    //             XCTAssert(pcapng.segments.first?.interfaces.count == 1)
+    //             XCTAssert(pcapng.segments.first?.packetBlocks.count == 7)
                 
-            }
-        }
+    //         }
+    //     }
     func test001Le() {
-        let path = directory + "test001.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test001", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -53,9 +59,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
     
     func test002Le() {
-        let path = directory + "test002.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test002", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -76,9 +82,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test003Le() {
-        let path = directory + "test003.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test003", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -99,9 +105,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
     
     func test004Le() {
-        let path = directory + "test004.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test004", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -130,9 +136,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test005Le() {
-        let path = directory + "test005.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test005", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -159,9 +165,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test006Le() {
-        let path = directory + "test006.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test006", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -181,9 +187,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test007Le() {
-        let path = directory + "test007.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test007", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -204,9 +210,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
 
 
     func test008Le() {
-        let path = directory + "test008.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test008", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -230,9 +236,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test009Le() {
-        let path = directory + "test009.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test009", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -252,9 +258,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
     
     func test010Le() {
-        let path = directory + "test010.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test010", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -280,9 +286,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test011Le() {
-        let path = directory + "test011.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test011", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -302,9 +308,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test012Le() {
-        let path = directory + "test012.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test012", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -334,9 +340,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test013Le() {
-        let path = directory + "test013.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test013", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -357,9 +363,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test014Le() {
-        let path = directory + "test014.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test014", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -380,9 +386,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test015Le() {
-        let path = directory + "test015.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test015", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -405,9 +411,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test016Le() {
-        let path = directory + "test016.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test016", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -428,9 +434,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test017Le() {
-        let path = directory + "test017.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test017", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
@@ -456,9 +462,9 @@ final class PackageSwiftPcapngBasicLeTests: XCTestCase {
     }
 
     func test018Le() {
-        let path = directory + "test018.pcapng"
+        let pcapngURL = getPcapngURL(forResource: "test018", withExtension: "pcapng")
         let result: Result<Data,Error> = Result {
-            try Data(contentsOf: URL(fileURLWithPath: path))
+            try Data(contentsOf: pcapngURL)
         }
         switch result {
         case .failure(let error):
